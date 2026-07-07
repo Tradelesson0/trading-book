@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>أخطاء التداول وحلولها – كتاب التداول الواعي</title>
+
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAHCSURBVFiF7Zc9a1RBFIaPuUuIin/AxkIQLHwBWxuL2AtpFKwCgpX+ApFsE7AQsRAbmyCghkVEFBULGxtbC1GxUiFgFgKbLBEUfKycmcVF7p09u2c3G+7CgQNn5p3zMWdmz2Y2s9nMP09LHvC0LEpVSZLUSZKOXJIkHZIkfAqC4APW4y2LdLtrUsNGVZ1sOAiC/wfghz9AmBzSlALoQGCaPUtS/zTguCctACwAr+9AiImyBTgP3AUuACeAk81hn8u0mNrpepMuzcC8bpcgSxskSZIkSZKkHjKRU1XjMBgCo+AT8AR4DFwFXgGXgUHAqas1fuzg1M1CgHN9x9JfjV/Osd9fjOYD7wD2p7MlySJwH9id0w7H2RhmfUrt/4KPAw+AJ8DNNI8H5nIOONIK/AM4ADwB7hd0FjBLWx2e5X5F4ifAJ+A4MAscKGh9Dr+NMqx9jD9Y2+1+wL/FMHye4L0sBZwG7q/g/Uqx8l3gZskW96CwnGQ5aQC3y7ZbsoUFeJQF0D/svwX22Nb/HbDf9r8C9rpK3gLuprHp/QObm63AOfAd+PRbbATmD1wBDmS9E4F9wEbgaOAhcL1pA/CvVj0CXK/bQ0A/8JrG/htg2ZavraVZ1m2l7V6U7KqNy/ML4Z+B0fP/AAAAAElFTkSuQmCC" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================ */
+        /* ===== شاشة الترحيب - خلفية رسوم تداول متحركة ===== */
+        /* ============================================================ */
+
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #0b0b0b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            overflow: hidden;
+        }
+
+        #splash-screen.hide {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        #splash-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .splash-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-tl {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .tl-char {
+            font-size: 52px;
+            font-weight: 900;
+            font-family: 'Cairo', sans-serif;
+            letter-spacing: -2px;
+        }
+
+        .t-char {
+            color: #ece8e0;
+            font-size: 56px;
+            margin-bottom: -6px;
+            text-shadow: 0 0 40px rgba(196, 155, 63, 0.1);
+        }
+
+        .l-char {
+            background: linear-gradient(135deg, #c49b3f, #f5d78a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 48px;
+            margin-top: -6px;
+            animation: goldShine 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes goldShine {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        .logo-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ece8e0;
+            font-family: 'Cairo', sans-serif;
+            margin-top: 2px;
+            animation: splashPulse 1.2s ease-in-out infinite alternate;
+        }
+
+        .logo-name span {
+            background: linear-gradient(135deg, #c49b3f, #f5d78a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes splashPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1.03);
+                opacity: 1;
+            }
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: #a8926a;
+            letter-spacing: 0.2em;
+            margin-top: 4px;
+            opacity: 0.5;
+            font-weight: 300;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .divider {
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c49b3f, transparent);
+            margin: 12px 0 14px;
+            opacity: 0.3;
+        }
+
+        .loader {
+            width: 36px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loader::after {
+            content: '';
+            display: block;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, #c49b3f, #f5d78a);
+            border-radius: 4px;
+            animation: loaderMove 1.2s ease-in-out infinite;
+        }
+
+        @keyframes loaderMove {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(300%);
+            }
+        }
+
+        /* ============================================================ */
+        /* ===== باقي الأنماط ===== */
+        /* ============================================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background: #0b0b0b;
+            color: #ece8e0;
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --bg: #0b0b0b;
+            --secondary: #14141f;
+            --accent: #c49b3f;
+            --accent-dim: #8a7a4a;
+            --accent-soft: #a8926a;
+            --text: #ece8e0;
+            --text-muted: #7a7a7a;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 70% 20%, rgba(196, 155, 63, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 30% 80%, rgba(196, 155, 63, 0.025) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        #trading-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0;
+            animation: bgReveal 1.2s ease-out 0.3s forwards;
+        }
+
+        @keyframes bgReveal {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .line-up {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(196, 155, 63, 0.6), transparent);
+            border-radius: 2px;
+            animation: moveUp 12s linear infinite;
+        }
+
+        .line-down {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(196, 155, 63, 0.4), transparent);
+            border-radius: 2px;
+            animation: moveDown 14s linear infinite;
+        }
+
+        @keyframes moveUp {
+            0% {
+                transform: translateY(100vh) rotate(-3deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) rotate(-3deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes moveDown {
+            0% {
+                transform: translateY(-20vh) rotate(3deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(3deg);
+                opacity: 0;
+            }
+        }
+
+        .candle {
+            position: absolute;
+            width: 6px;
+            border-radius: 2px;
+            animation: candleFade 18s linear infinite;
+        }
+
+        .candle-body {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            border-radius: 2px;
+        }
+
+        .candle.up .candle-body {
+            background: rgba(34, 197, 94, 0.5);
+        }
+
+        .candle.down .candle-body {
+            background: rgba(239, 68, 68, 0.5);
+        }
+
+        .candle .wick {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1.5px;
+            background: rgba(196, 155, 63, 0.2);
+            border-radius: 1px;
+        }
+
+        .candle .wick.top {
+            top: 0;
+            height: 8px;
+        }
+
+        .candle .wick.bottom {
+            bottom: 0;
+            height: 8px;
+        }
+
+        @keyframes candleFade {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.8);
+            }
+            15% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            85% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+        }
+
+        .candle:nth-child(1) {
+            left: 5%;
+            animation-delay: 0s;
+            top: 20%;
+        }
+        .candle:nth-child(2) {
+            left: 15%;
+            animation-delay: 1.5s;
+            top: 50%;
+        }
+        .candle:nth-child(3) {
+            left: 25%;
+            animation-delay: 3s;
+            top: 35%;
+        }
+        .candle:nth-child(4) {
+            left: 35%;
+            animation-delay: 4.5s;
+            top: 70%;
+        }
+        .candle:nth-child(5) {
+            left: 45%;
+            animation-delay: 6s;
+            top: 25%;
+        }
+        .candle:nth-child(6) {
+            left: 55%;
+            animation-delay: 7.5s;
+            top: 60%;
+        }
+        .candle:nth-child(7) {
+            left: 65%;
+            animation-delay: 9s;
+            top: 40%;
+        }
+        .candle:nth-child(8) {
+            left: 75%;
+            animation-delay: 10.5s;
+            top: 75%;
+        }
+        .candle:nth-child(9) {
+            left: 85%;
+            animation-delay: 12s;
+            top: 30%;
+        }
+        .candle:nth-child(10) {
+            left: 95%;
+            animation-delay: 13.5s;
+            top: 55%;
+        }
+        .candle:nth-child(11) {
+            left: 10%;
+            animation-delay: 2s;
+            top: 80%;
+        }
+        .candle:nth-child(12) {
+            left: 30%;
+            animation-delay: 5s;
+            top: 15%;
+        }
+        .candle:nth-child(13) {
+            left: 50%;
+            animation-delay: 8s;
+            top: 85%;
+        }
+        .candle:nth-child(14) {
+            left: 70%;
+            animation-delay: 11s;
+            top: 10%;
+        }
+        .candle:nth-child(15) {
+            left: 90%;
+            animation-delay: 14s;
+            top: 65%;
+        }
+
+        .candle.up .candle-body {
+            height: 30px;
+            bottom: 10px;
+        }
+        .candle.down .candle-body {
+            height: 25px;
+            top: 10px;
+        }
+        .candle .wick.top {
+            height: 10px;
+        }
+        .candle .wick.bottom {
+            height: 10px;
+        }
+
+        .wrap,
+        section,
+        header {
+            position: relative;
+            z-index: 1;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+        /* ============================================================ */
+        /* ===== أنميشن الدخول ===== */
+        /* ============================================================ */
+
+        .animate-on-load {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .animate-on-load.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .animate-on-load.delay-1 {
+            transition-delay: 0.05s;
+        }
+        .animate-on-load.delay-2 {
+            transition-delay: 0.10s;
+        }
+        .animate-on-load.delay-3 {
+            transition-delay: 0.15s;
+        }
+        .animate-on-load.delay-4 {
+            transition-delay: 0.20s;
+        }
+        .animate-on-load.delay-5 {
+            transition-delay: 0.30s;
+        }
+        .animate-on-load.delay-6 {
+            transition-delay: 0.40s;
+        }
+        .animate-on-load.delay-7 {
+            transition-delay: 0.50s;
+        }
+        .animate-on-load.delay-8 {
+            transition-delay: 0.60s;
+        }
+        .animate-on-load.delay-9 {
+            transition-delay: 0.70s;
+        }
+        .animate-on-load.delay-10 {
+            transition-delay: 0.85s;
+        }
+
+        /* ============================================================ */
+        /* ===== الأزرار ===== */
+        /* ============================================================ */
+
+        .btn-primary {
+            display: inline-block;
+            background: #c49b3f;
+            color: #0b0b0b !important;
+            font-weight: 900;
+            padding: 18px 44px;
+            font-size: clamp(16px, 1.3vw, 18px);
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 24px rgba(196, 155, 63, 0.08);
+            transition: all 0.3s ease;
+            animation: pulseIn 0.6s ease-out 1.2s both;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(196, 155, 63, 0.12);
+            background: #d4aa4a;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: #ece8e0;
+            font-weight: 600;
+            padding: 14px 28px;
+            font-size: clamp(14px, 1vw, 15px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: pulseIn 0.6s ease-out 1.2s both;
+        }
+
+        .btn-secondary:hover {
+            border-color: #8a7a4a;
+            color: #c49b3f;
+            transform: translateY(-2px);
+        }
+
+        @keyframes pulseIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================================ */
+        /* ===== الهيدر - ترتيب جديد ===== */
+        /* ============================================================ */
+
+        header.nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(11, 11, 11, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 10px 0;
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 900;
+            color: #ece8e0;
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: #c49b3f;
+        }
+
+        /* ===== المؤشرات الثلاثة (شموع تداول) ===== */
+        .trading-candles {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 30px;
+        }
+
+        .candle-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 8px;
+            position: relative;
+        }
+
+        .candle-indicator .candle-body {
+            width: 6px;
+            border-radius: 1px;
+            position: relative;
+        }
+
+        .candle-indicator .candle-body.bullish {
+            background: #22c55e;
+            height: 18px;
+            bottom: 0;
+        }
+
+        .candle-indicator .candle-body.bearish {
+            background: #ef4444;
+            height: 18px;
+            top: 0;
+        }
+
+        .candle-indicator .wick {
+            width: 1.5px;
+            background: rgba(255, 255, 255, 0.15);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .candle-indicator .wick.top {
+            top: -6px;
+            height: 6px;
+        }
+
+        .candle-indicator .wick.bottom {
+            bottom: -6px;
+            height: 6px;
+        }
+
+        .candle-indicator.bullish .wick.top,
+        .candle-indicator.bullish .wick.bottom {
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        .candle-indicator.bearish .wick.top,
+        .candle-indicator.bearish .wick.bottom {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .candle-indicator:nth-child(1) .candle-body {
+            height: 14px;
+        }
+        .candle-indicator:nth-child(2) .candle-body {
+            height: 22px;
+        }
+        .candle-indicator:nth-child(3) .candle-body {
+            height: 10px;
+        }
+
+        /* ============================================================ */
+        /* ===== القائمة المنسدلة ===== */
+        /* ============================================================ */
+
+        .nav-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .nav-dropdown .dropbtn {
+            background: rgba(255, 255, 255, 0.04);
+            color: #a8926a;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-dropdown .dropbtn:hover {
+            background: rgba(196, 155, 63, 0.06);
+            border-color: rgba(196, 155, 63, 0.1);
+            color: #ece8e0;
+        }
+
+        .nav-dropdown .dropbtn .arrow {
+            font-size: 10px;
+            transition: transform 0.3s;
+        }
+
+        .nav-dropdown .dropbtn.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 110%;
+            background: rgba(20, 20, 31, 0.98);
+            backdrop-filter: blur(16px);
+            min-width: 160px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 6px 0;
+            z-index: 100;
+            animation: dropdownFade 0.3s ease;
+        }
+
+        .nav-dropdown .dropdown-content.show {
+            display: block;
+        }
+
+        @keyframes dropdownFade {
+            0% {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .nav-dropdown .dropdown-content a {
+            display: block;
+            padding: 10px 20px;
+            color: #a8926a;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: right;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+        }
+
+        .nav-dropdown .dropdown-content a:hover {
+            background: rgba(196, 155, 63, 0.06);
+            color: #ece8e0;
+        }
+
+        .nav-dropdown .dropdown-content .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.04);
+            margin: 4px 12px;
+        }
+
+        /* ============================================================ */
+        /* ===== القسم الرئيسي ===== */
+        /* ============================================================ */
+
+        #hero {
+            padding: 40px 0 30px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        #hero .lede-main {
+            font-size: clamp(22px, 3.8vw, 38px);
+            font-weight: 900;
+            line-height: 1.2;
+            color: #ece8e0;
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+
+        #hero .lede-sub {
+            font-size: clamp(16px, 2.4vw, 24px);
+            font-weight: 700;
+            color: #c49b3f;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        #hero .lede-sub .pct {
+            color: #c49b3f;
+            font-size: 1.1em;
+        }
+
+        #hero .sub {
+            font-size: clamp(15px, 1.4vw, 17px);
+            color: #a8926a;
+            max-width: 48ch;
+            line-height: 1.8;
+            margin-top: 14px;
+            margin-bottom: 20px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 12px;
+        }
+
+        .hero-stats .stat .num {
+            font-size: 24px;
+            font-weight: 900;
+            color: #c49b3f;
+            display: block;
+            line-height: 1;
+        }
+
+        .hero-stats .stat .label {
+            font-size: 12px;
+            color: #a8926a;
+        }
+
+        /* ============================================================ */
+        /* ===== غلاف الكتاب ===== */
+        /* ============================================================ */
+
+        .book-cover {
+            position: relative;
+            max-width: 340px;
+            margin: 0 auto;
+            aspect-ratio: 3/4;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #0b0b0b;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .book-cover canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* ============================================================ */
+        /* ===== باقي الأقسام ===== */
+        /* ============================================================ */
+
+        #book-context {
+            background: #14141f;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 44px 0;
+        }
+
+        .ctx-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .ctx-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .ctx-features .item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .ctx-features .item .num {
+            font-size: 26px;
+            font-weight: 900;
+            color: #c49b3f;
+            display: block;
+            line-height: 1;
+        }
+
+        .ctx-features .item .label {
+            font-size: 12px;
+            color: #a8926a;
+        }
+
+        #book-context h2 {
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 900;
+            line-height: 1.15;
+            margin: 10px 0 14px;
+        }
+
+        #book-context p {
+            color: #a8926a;
+            max-width: 44ch;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* ============================================================ */
+        /* ===== المميزات ===== */
+        /* ============================================================ */
+
+        #what-you-learn h2 {
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 900;
+            margin: 8px 0 32px;
+        }
+
+        .learn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .learn-card {
+            background: rgba(20, 20, 31, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 20px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .learn-card:hover {
+            border-color: rgba(196, 155, 63, 0.04);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .learn-card .mark {
+            font-size: 22px;
+            color: #8a7a4a;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .learn-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .learn-card p {
+            font-size: 13px;
+            color: #a8926a;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ============================================================ */
+        /* ===== الإحصائيات ===== */
+        /* ============================================================ */
+
+        #stat-cluster {
+            background: #14141f;
+            text-align: center;
+            padding: 44px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .stat-row {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .stat-lead .n {
+            font-size: clamp(56px, 11vw, 100px);
+            font-weight: 900;
+            color: #c49b3f;
+            line-height: 0.9;
+            display: block;
+        }
+
+        .stat-lead .l {
+            font-size: 13px;
+            color: #a8926a;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .stat-min .n {
+            font-size: clamp(28px, 3.6vw, 40px);
+            font-weight: 900;
+            color: #ece8e0;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-min .l {
+            font-size: 12px;
+            color: #a8926a;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        #stat-cluster .cap {
+            margin-top: 24px;
+            color: #a8926a;
+            max-width: 48ch;
+            margin-inline: auto;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* ============================================================ */
+        /* ===== لمن هذا الكتاب ===== */
+        /* ============================================================ */
+
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .split .col {
+            background: rgba(20, 20, 31, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 24px 20px;
+        }
+
+        .split .yes {
+            background: rgba(196, 155, 63, 0.10);
+            border: 1px solid rgba(196, 155, 63, 0.12);
+        }
+
+        .split .yes h3 {
+            color: #c49b3f;
+        }
+
+        .split h3 {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .split ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .split li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 6px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+            color: #a8926a;
+        }
+
+        .split li:first-child {
+            border-top: none;
+        }
+
+        .objection {
+            margin-top: 20px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            background: rgba(20, 20, 31, 0.92);
+            border-right: 3px solid #8a7a4a;
+        }
+
+        .objection p {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 300;
+            color: #a8926a;
+            font-style: italic;
+        }
+
+        /* ============================================================ */
+        /* ===== سعر الكتاب ===== */
+        /* ============================================================ */
+
+        #pricing {
+            background: #14141f;
+            text-align: center;
+            padding: 44px 0 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        #pricing .price {
+            font-size: clamp(38px, 5.5vw, 58px);
+            font-weight: 900;
+            color: #c49b3f;
+            line-height: 1;
+            margin: 6px 0 2px;
+        }
+
+        #pricing .price small {
+            font-size: 0.35em;
+            font-weight: 400;
+            color: #a8926a;
+        }
+
+        #pricing .conv {
+            color: #a8926a;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        #pricing .risk {
+            color: #7a7a7a;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        #pricing .btn-group {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #pricing .btn-group .btn-secondary {
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ============================================================ */
+        /* ===== المؤلف ===== */
+        /* ============================================================ */
+
+        #author-contact {
+            padding: 36px 0;
+        }
+
+        #author-contact h2 {
+            font-size: clamp(22px, 2.8vw, 34px);
+            font-weight: 900;
+            margin: 6px 0 14px;
+        }
+
+        .contacts {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 16px 0 20px;
+        }
+
+        .contacts a {
+            color: #a8926a;
+            text-decoration: none;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .contacts a:hover {
+            border-color: #8a7a4a;
+            color: #c49b3f;
+        }
+
+        /* ============================================================ */
+        /* ===== تقييم النجوم ===== */
+        /* ============================================================ */
+
+        #rating-section {
+            background: #14141f;
+            padding: 36px 0 44px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .rating-box {
+            max-width: 520px;
+            margin: 0 auto;
+            text-align: center;
+            background: rgba(10, 10, 10, 0.85);
+            padding: 28px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+        }
+
+        .rating-box h3 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .rating-box .sub {
+            font-size: 13px;
+            color: #a8926a;
+            margin-bottom: 16px;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .rating-stars .star {
+            font-size: 32px;
+            cursor: pointer;
+            color: #4a4a5a;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .rating-stars .star:hover,
+        .rating-stars .star.active {
+            color: #c49b3f;
+            transform: scale(1.1);
+        }
+
+        .rating-box textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(10, 10, 10, 0.5);
+            color: #ece8e0;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Cairo', sans-serif;
+            transition: border 0.3s;
+            margin-bottom: 12px;
+        }
+
+        .rating-box textarea:focus {
+            border-color: #8a7a4a;
+            outline: none;
+        }
+
+        .rating-box textarea::placeholder {
+            color: #7a7a7a;
+        }
+
+        .rating-box .rating-btn {
+            padding: 12px 32px;
+            background: #c49b3f;
+            color: #0b0b0b;
+            font-weight: 800;
+            font-size: 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rating-box .rating-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(196, 155, 63, 0.08);
+            background: #d4aa4a;
+        }
+
+        .rating-box .rating-note {
+            font-size: 12px;
+            color: #7a7a7a;
+            margin-top: 10px;
+        }
+
+        /* ============================================================ */
+        /* ===== التذييل ===== */
+        /* ============================================================ */
+
+        footer {
+            text-align: center;
+            padding: 20px 0 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.01);
+            font-size: 12px;
+            color: #7a7a7a;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ============================================================ */
+        /* ===== استجابة ===== */
+        /* ============================================================ */
+
+        @media (max-width: 992px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+            .book-cover {
+                max-width: 260px;
+            }
+            .ctx-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .ctx-features {
+                grid-template-columns: 1fr 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .learn-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-inner {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .learn-grid {
+                grid-template-columns: 1fr;
+            }
+            .stat-row {
+                gap: 16px;
+            }
+            .contacts {
+                flex-direction: column;
+                align-items: center;
+            }
+            #pricing .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            #pricing .btn-group .btn-primary,
+            #pricing .btn-group .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+            .ctx-features {
+                grid-template-columns: 1fr;
+            }
+            section {
+                padding: 28px 0;
+            }
+            .rating-box {
+                padding: 18px 14px;
+            }
+            .rating-stars .star {
+                font-size: 28px;
+            }
+            .footer-inner {
+                flex-direction: column;
+                gap: 12px;
+            }
+            #hero .lede-main {
+                font-size: clamp(18px, 4vw, 26px);
+            }
+            #hero .lede-sub {
+                font-size: clamp(14px, 2.8vw, 18px);
+            }
+            #back-to-top {
+                bottom: 16px;
+                right: 16px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            .book-cover {
+                max-width: 200px;
+            }
+            .trading-candles {
+                height: 24px;
+                gap: 3px;
+            }
+            .candle-indicator .candle-body {
+                width: 4px;
+            }
+            .candle-indicator:nth-child(1) .candle-body {
+                height: 10px;
+            }
+            .candle-indicator:nth-child(2) .candle-body {
+                height: 18px;
+            }
+            .candle-indicator:nth-child(3) .candle-body {
+                height: 8px;
+            }
+            .brand {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .book-cover {
+                max-width: 160px;
+            }
+            .btn-primary {
+                padding: 14px 24px;
+                font-size: 14px;
+                width: 100%;
+                text-align: center;
+            }
+            .btn-secondary {
+                padding: 10px 18px;
+                font-size: 13px;
+                width: 100%;
+                text-align: center;
+            }
+            #hero .lede-main {
+                font-size: clamp(16px, 3.8vw, 22px);
+            }
+            #hero .lede-sub {
+                font-size: clamp(12px, 2.6vw, 16px);
+            }
+            .tl-char {
+                font-size: 38px;
+            }
+            .t-char {
+                font-size: 42px;
+            }
+            .l-char {
+                font-size: 36px;
+            }
+            .logo-name {
+                font-size: 22px;
+            }
+            .trading-candles {
+                gap: 2px;
+            }
+            .candle-indicator .candle-body {
+                width: 3px;
+            }
+            .candle-indicator:nth-child(1) .candle-body {
+                height: 8px;
+            }
+            .candle-indicator:nth-child(2) .candle-body {
+                height: 14px;
+            }
+            .candle-indicator:nth-child(3) .candle-body {
+                height: 6px;
+            }
+        }
+
+        /* ============================================================ */
+        /* ===== اللغة الإنجليزية ===== */
+        /* ============================================================ */
+
+        body.lang-en {
+            direction: ltr;
+            text-align: left;
+        }
+
+        body.lang-en .wrap,
+        body.lang-en section,
+        body.lang-en header {
+            direction: ltr;
+            text-align: left;
+        }
+
+        body.lang-en .nav-links {
+            direction: ltr;
+        }
+
+        body.lang-en .hero-stats {
+            direction: ltr;
+        }
+
+        body.lang-en .split li {
+            direction: ltr;
+        }
+
+        body.lang-en .objection {
+            border-right: none;
+            border-left: 3px solid #8a7a4a;
+        }
+
+        body.lang-en .ctx-features .item {
+            direction: ltr;
+        }
+
+        body.lang-en .rating-box {
+            direction: ltr;
+        }
+
+        body.lang-en .contacts {
+            direction: ltr;
+        }
+
+        body.lang-en #back-to-top {
+            right: auto;
+            left: 24px;
+        }
+
+        body.lang-en .trading-candles {
+            direction: ltr;
+        }
+
+        @media (max-width: 640px) {
+            body.lang-en #back-to-top {
+                left: 16px;
+                right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- شاشة الترحيب -->
+    <!-- ============================================================ -->
+    <div id="splash-screen">
+        <canvas id="splash-canvas"></canvas>
+        <div class="splash-content">
+            <div class="logo-tl">
+                <span class="tl-char t-char">T</span>
+                <span class="tl-char l-char">L</span>
+            </div>
+            <div class="logo-name">Trade<span>Lesson</span></div>
+            <div class="logo-sub">PROFESSIONAL TRADING APPLICATION</div>
+            <div class="divider"></div>
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- خلفية التداول -->
+    <!-- ============================================================ -->
+    <div id="trading-bg">
+        <div class="line-up" style="left: 10%; width: 30%; animation-duration: 11s; animation-delay: 0s;"></div>
+        <div class="line-up" style="left: 40%; width: 25%; animation-duration: 14s; animation-delay: 3s;"></div>
+        <div class="line-up" style="left: 70%; width: 35%; animation-duration: 12s; animation-delay: 6s;"></div>
+        <div class="line-down" style="left: 20%; width: 20%; animation-duration: 13s; animation-delay: 1s;"></div>
+        <div class="line-down" style="left: 55%; width: 30%; animation-duration: 15s; animation-delay: 4s;"></div>
+        <div class="line-down" style="left: 85%; width: 25%; animation-duration: 11s; animation-delay: 7s;"></div>
+
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- الهيدر -->
+    <!-- ============================================================ -->
+    <header class="nav animate-on-load delay-1">
+        <div class="wrap nav-inner">
+            <!-- الجهة اليسرى: اسم الموقع + المؤشرات -->
+            <div class="nav-left">
+                <a href="#" class="brand"><span>Trade</span>Lesson</a>
+
+                <!-- المؤشرات الثلاثة (شموع تداول) -->
+                <div class="trading-candles">
+                    <div class="candle-indicator bullish">
+                        <div class="wick top"></div>
+                        <div class="candle-body bullish"></div>
+                        <div class="wick bottom"></div>
+                    </div>
+                    <div class="candle-indicator bearish">
+                        <div class="wick top"></div>
+                        <div class="candle-body bearish"></div>
+                        <div class="wick bottom"></div>
+                    </div>
+                    <div class="candle-indicator bullish">
+                        <div class="wick top"></div>
+                        <div class="candle-body bullish"></div>
+                        <div class="wick bottom"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الجهة اليمنى: القائمة المنسدلة -->
+            <div class="nav-dropdown">
+                <button class="dropbtn" onclick="toggleDropdown()">
+                    ☰
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="dropdownMenu">
+                    <a href="#what-you-learn" onclick="closeDropdown()" data-ar="المميزات" data-en="Features">المميزات</a>
+                    <a href="#book-context" onclick="closeDropdown()" data-ar="عن الكتاب" data-en="About Book">عن الكتاب</a>
+                    <a href="#pricing" onclick="closeDropdown()" data-ar="السعر" data-en="Price">السعر</a>
+                    <a href="#author-contact" onclick="closeDropdown()" data-ar="عن المؤلف" data-en="About">عن المؤلف</a>
+                    <a href="#rating-section" onclick="closeDropdown()" data-ar="التقييم" data-en="Rating">التقييم</a>
+                    <div class="divider"></div>
+                    <a href="#" onclick="toggleLanguage(); closeDropdown();" id="langDropdownBtn">English</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- القسم الرئيسي -->
+    <!-- ============================================================ -->
+    <section id="hero">
+        <div class="wrap hero-grid">
+            <div class="hero-content">
+                <h1 class="lede-main animate-on-load delay-2" id="heroMainTitle">
+                    أخطاء التداول وحلولها
+                </h1>
+                <h2 class="lede-sub animate-on-load delay-3" id="heroSubTitle">
+                    — لماذا يخسر <span class="pct">80%</span> من المبتدئين؟
+                </h2>
+                <p class="sub animate-on-load delay-4" id="heroSub">دليل عملي يعلّمك متى يجب ألا تتداول أصلاً — لا وعود ربح، بل حماية لرأس مالك.</p>
+                <div class="hero-stats animate-on-load delay-5">
+                    <div class="stat">
+                        <span class="num counter" data-target="80" data-suffix="%">0%</span>
+                        <span class="label" id="stat1Label">من المبتدئين يخسرون</span>
+                    </div>
+                    <div class="stat">
+                        <span class="num counter" data-target="2" data-suffix="%">0%</span>
+                        <span class="label" id="stat2Label">قاعدة إدارة المخاطر</span>
+                    </div>
+                    <div class="stat">
+                        <span class="num counter" data-target="12">0</span>
+                        <span class="label" id="stat3Label">فصلاً عملياً</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- غلاف الكتاب -->
+            <div class="book-cover animate-on-load delay-6">
+                <canvas id="coverCanvas"></canvas>
+            </div>
+        </div>
+        <div class="wrap"><div class="hairline"></div></div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- عن الكتاب -->
+    <!-- ============================================================ -->
+    <section id="book-context" class="animate-on-load delay-7">
+        <div class="wrap ctx-grid">
+            <div>
+                <span class="eyebrow" id="bookEyebrow">عن الكتاب</span>
+                <h2 id="bookTitle">كتابٌ يُقرأ ويُطبَّق — لا نظريات معلّقة في الهواء.</h2>
+                <p id="bookDesc">أكثر من 100 صفحة موزّعة على <strong>12 فصلاً عملياً</strong>، كُتبت للمبتدئين والمتوسطين بأسلوب مباشر. بعد كل فصل تجد تمارين تطبيقية تنقل الفكرة من الورق إلى قراراتك اليومية في السوق.</p>
+            </div>
+            <div class="ctx-features">
+                <div class="item"><span class="num">+100</span><span class="label" id="feature1">صفحة عملية</span></div>
+                <div class="item"><span class="num">12</span><span class="label" id="feature2">فصلاً مركّزاً</span></div>
+                <div class="item"><span class="num">✦</span><span class="label" id="feature3">تمارين بعد كل فصل</span></div>
+                <div class="item"><span class="num">📊</span><span class="label" id="feature4">رسوم توضيحية</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- المميزات -->
+    <!-- ============================================================ -->
+    <section id="what-you-learn" class="animate-on-load delay-8">
+        <div class="wrap">
+            <span class="eyebrow" id="learnEyebrow">ماذا ستتعلم</span>
+            <h2 id="learnTitle">12 فصلاً تنقلك من الخسارة العشوائية إلى قرارٍ مدروس.</h2>
+            <div class="learn-grid">
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn1Title">لماذا يخسر المبتدئون؟</h3><p id="learn1Desc">تشريح هادئ للأسباب الحقيقية وراء خسارة الغالبية.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn2Title">متى يكون عدم التداول أذكى قرار</h3><p id="learn2Desc">الانتظار ليس ضعفاً. البقاء خارج السوق قد يكون أفضل صفقاتك.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn3Title">التكاليف الخفية</h3><p id="learn3Desc">حماية رأس المال من العمولات والفروقات التي تأكل أرباحك بصمت.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn4Title">قاعدة الـ2%</h3><p id="learn4Desc">منهج بسيط لإدارة المخاطر يبقيك في اللعبة لأطول فترة ممكنة.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn5Title">استراتيجيات الدخول والخروج</h3><p id="learn5Desc">تعلم متى تدخل ومتى تخرج بذكاء، مع أمثلة عملية.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn6Title">تمارين تطبّق فوراً</h3><p id="learn6Desc">خطوات عملية تنفّذها مباشرة بعد كل فصل لترسيخ ما تعلّمته.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- الإحصائيات -->
+    <!-- ============================================================ -->
+    <section id="stat-cluster" class="animate-on-load delay-9">
+        <div class="wrap">
+            <div class="stat-row">
+                <div class="stat-lead"><span class="n counter" data-target="80" data-suffix="%">0%</span><span class="l" id="statLeadLabel">من المبتدئين يخسرون</span></div>
+                <div class="stat-min"><span class="n counter" data-target="2" data-suffix="%">0%</span><span class="l" id="statMin1Label">قاعدة إدارة المخاطر</span></div>
+                <div class="stat-min"><span class="n counter" data-target="12">0</span><span class="l" id="statMin2Label">فصلاً عملياً</span></div>
+            </div>
+            <p class="cap" id="statCap">رقمٌ واحد يكفي ليجعلك تتوقّف وتفكّر — هذا الكتاب لا يَعِدك بأن تكون ضمن الـ20%، بل يعلّمك كيف تتجنّب أن تكون ضمن الـ80%.</p>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- لمن هذا الكتاب -->
+    <!-- ============================================================ -->
+    <section id="who-its-for" class="animate-on-load delay-10">
+        <div class="wrap">
+            <span class="eyebrow" id="whoEyebrow">لمن هذا الكتاب</span>
+            <h2 style="font-size:clamp(24px,3vw,36px); font-weight:900; margin:8px 0 32px;" id="whoTitle">كن صريحاً مع نفسك قبل أن تطلب.</h2>
+            <div class="split">
+                <div class="col yes">
+                    <h3 id="whoYesTitle">هذا الكتاب لك إذا…</h3>
+                    <ul>
+                        <li id="whoYes1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49b3f" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>خسرت من قبل وتريد أن تفهم السبب الحقيقي.</li>
+                        <li id="whoYes2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49b3f" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>تبحث عن منهج واضح بلا وعود ولا مبالغة.</li>
+                        <li id="whoYes3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49b3f" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>مستعد للانضباط وحماية رأس مالك أولاً.</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3 id="whoNoTitle">ليس لك إذا…</h3>
+                    <ul>
+                        <li id="whoNo1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"></path></svg>تريد إشارات تداول جاهزة تتبعها بلا فهم.</li>
+                        <li id="whoNo2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"></path></svg>تبحث عن وصفة ثراء سريع بين ليلة وضحاها.</li>
+                        <li id="whoNo3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"></path></svg>لا ترغب في التطبيق ولا في تغيير عاداتك.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="objection">
+                <p id="objectionText">«كتب التداول كلها كلام نظري» — هذا الكتاب لا يبيعك حلماً؛ يخبرك أحياناً ألّا تتداول، ويعطيك تمريناً تطبّقه اليوم. الصدق هو الفرق.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- سعر الكتاب -->
+    <!-- ============================================================ -->
+    <section id="pricing" class="animate-on-load delay-10">
+        <div class="wrap">
+            <span class="eyebrow" id="priceEyebrow">السعر</span>
+            <div class="price">700 <small id="priceCurrency">د.ج ≈ 5 دولارات</small></div>
+            <p class="conv" id="priceConv">نسخة كاملة — أكثر من 100 صفحة و12 فصلاً عملياً.</p>
+            <p class="risk" id="priceRisk">الدفع عند الطلب — تواصل مباشر، لا اشتراكات ولا رسوم متكرّرة.</p>
+            <div class="btn-group">
+                <a href="https://www.instagram.com/tradelesson00" target="_blank" rel="noopener noreferrer" class="btn-primary" id="bookBtn">📩 احجز نسختك الآن</a>
+                <a href="mailto:tradelesson00@gmail.com?subject=استفسار عن الكتاب&body=مرحباً، أود الحصول على كتاب أخطاء التداول وحلولها..." class="btn-secondary" id="emailBtn">📧 تواصل عبر البريد</a>
+            </div>
+            <div style="margin-top: 10px; font-size: 13px; color: #7a7a7a;" id="paymentNote">⏳ الدفع عبر التحويل البريدي (CCP) أو فودافون كاش</div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- المؤلف -->
+    <!-- ============================================================ -->
+    <section id="author-contact" class="animate-on-load delay-10">
+        <div class="wrap" style="text-align:center;">
+            <span class="eyebrow" id="authorEyebrow">تواصل مع الكاتب</span>
+            <h2 id="authorTitle">صوتٌ صريح خلف «أخطاء التداول وحلولها».</h2>
+            <div class="contacts">
+                <a href="https://www.instagram.com/tradelesson00" target="_blank" rel="noopener noreferrer" id="instagramLink">📸 إنستغرام @tradelesson00</a>
+                <a href="mailto:tradelesson00@gmail.com" id="emailLink">📧 البريد الإلكتروني</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- تقييم النجوم -->
+    <!-- ============================================================ -->
+    <section id="rating-section" class="animate-on-load delay-10">
+        <div class="wrap">
+            <div class="rating-box">
+                <h3 id="ratingTitle">⭐ كيف تقيم الكتاب؟</h3>
+                <p class="sub" id="ratingSub">شاركنا رأيك ليساعدنا في تطوير المحتوى</p>
+                <div class="rating-stars" id="starContainer">
+                    <button class="star" data-value="1">★</button>
+                    <button class="star" data-value="2">★</button>
+                    <button class="star" data-value="3">★</button>
+                    <button class="star" data-value="4">★</button>
+                    <button class="star" data-value="5">★</button>
+                </div>
+                <textarea id="ratingFeedback" placeholder="اكتب ملاحظاتك هنا (اختياري)..."></textarea>
+                <button class="rating-btn" onclick="submitRating()" id="ratingBtn">📩 إرسال التقييم</button>
+                <div class="rating-note" id="ratingNote">سيتم إرسال تقييمك وملاحظاتك إلى البريد الإلكتروني</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- التذييل -->
+    <!-- ============================================================ -->
+    <footer>
+        <div class="wrap footer-inner">
+            <span id="footerText">© 2026 – فريق التداول الواعي. جميع الحقوق محفوظة.</span>
+            <button class="lang-switch" onclick="toggleLanguage()">
+                <span class="lang-icon">🌐</span>
+                <span id="langLabelFooter">English</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- JavaScript -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // 0. شاشة الترحيب - خلفية رسوم تداول متحركة
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('splash-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let points = [];
+            const numPoints = 100;
+            const amplitude = 0.35;
+
+            for (let i = 0; i < numPoints; i++) {
+                points.push({
+                    x: (i / numPoints),
+                    y: 0.5 + Math.sin(i * 0.06) * amplitude +
+                        Math.cos(i * 0.03) * amplitude * 0.5
+                });
+            }
+
+            let offset = 0;
+            let time = 0;
+
+            function drawSplashChart() {
+                const w = canvas.width;
+                const h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+
+                time += 0.008;
+                offset += 0.005;
+
+                // خطوط الشبكة
+                ctx.strokeStyle = 'rgba(196, 155, 63, 0.02)';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < 10; i++) {
+                    const y = h * 0.05 + i * (h * 0.9 / 9);
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                    ctx.stroke();
+                }
+
+                // تحديث النقاط
+                const newPoints = [];
+                for (let i = 0; i < numPoints; i++) {
+                    const baseX = i / numPoints;
+                    const wave1 = Math.sin(baseX * 20 + offset * 1.2) * 0.12;
+                    const wave2 = Math.cos(baseX * 12 + offset * 0.8) * 0.08;
+                    const wave3 = Math.sin(baseX * 30 + offset * 1.5 + time * 0.5) * 0.06;
+                    let y = 0.5 + Math.sin(baseX * 12 + offset * 0.6) * 0.25 +
+                        wave1 + wave2 + wave3;
+
+                    y = Math.max(0.08, Math.min(0.92, y));
+
+                    newPoints.push({
+                        x: baseX * w,
+                        y: y * h
+                    });
+                }
+
+                // الخط الرئيسي
+                ctx.beginPath();
+                for (let i = 0; i < newPoints.length; i++) {
+                    const p = newPoints[i];
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                }
+                ctx.strokeStyle = 'rgba(196, 155, 63, 0.2)';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // التظليل
+                ctx.beginPath();
+                ctx.moveTo(0, h);
+                for (let i = 0; i < newPoints.length; i++) {
+                    const p = newPoints[i];
+                    ctx.lineTo(p.x, p.y);
+                }
+                ctx.lineTo(w, h);
+                ctx.closePath();
+                const grad = ctx.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, 'rgba(196, 155, 63, 0.04)');
+                grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // الخط الثاني
+                ctx.beginPath();
+                for (let i = 0; i < newPoints.length; i++) {
+                    const p = newPoints[i];
+                    const y2 = p.y - Math.sin(i * 0.02 + offset * 0.5 + time) * h * 0.12;
+                    if (i === 0) ctx.moveTo(p.x, y2);
+                    else ctx.lineTo(p.x, y2);
+                }
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.08)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // الخط الثالث
+                ctx.beginPath();
+                for (let i = 0; i < newPoints.length; i++) {
+                    const p = newPoints[i];
+                    const y3 = p.y + Math.cos(i * 0.025 + offset * 0.3 + time * 0.7) * h * 0.08;
+                    if (i === 0) ctx.moveTo(p.x, y3);
+                    else ctx.lineTo(p.x, y3);
+                }
+                ctx.strokeStyle = 'rgba(196, 155, 63, 0.06)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // نقاط سعرية
+                for (let i = 0; i < newPoints.length; i += 5) {
+                    const p = newPoints[i];
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(196, 155, 63, 0.08)';
+                    ctx.fill();
+                }
+
+                // خطوط دعم ومقاومة
+                const supportY = h * 0.75 + Math.sin(offset * 0.5 + time * 0.3) * h * 0.05;
+                const resistanceY = h * 0.2 + Math.cos(offset * 0.7 + time * 0.4) * h * 0.04;
+
+                ctx.strokeStyle = 'rgba(196, 155, 63, 0.04)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([6, 8]);
+                ctx.beginPath();
+                ctx.moveTo(0, supportY);
+                ctx.lineTo(w, supportY);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, resistanceY);
+                ctx.lineTo(w, resistanceY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                requestAnimationFrame(drawSplashChart);
+            }
+
+            drawSplashChart();
+
+            setTimeout(function() {
+                document.getElementById('splash-screen').classList.add('hide');
+            }, 2200);
+        });
+
+        // ============================================================
+        // 1. غلاف الكتاب
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('coverCanvas');
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+
+            function resizeCover() {
+                const rect = container.getBoundingClientRect();
+                canvas.width = rect.width * window.devicePixelRatio;
+                canvas.height = rect.height * window.devicePixelRatio;
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                drawCover(rect.width, rect.height);
+            }
+
+            let coverAnimationId = null;
+
+            function drawCover(w, h) {
+                ctx.clearRect(0, 0, w, h);
+
+                const gradient = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w * 0.7);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#0b0b0b');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, w, h);
+
+                const time = Date.now() / 3000;
+
+                // خطوط بيانية
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(34, 197, 94, 0.2)';
+                ctx.lineWidth = 2;
+                for (let i = 0; i <= 100; i++) {
+                    const x = (i / 100) * w;
+                    const y = h * 0.7 - Math.sin(i * 0.08 + time) * h * 0.3 -
+                        Math.sin(i * 0.03 + time * 0.7) * h * 0.15;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.15)';
+                ctx.lineWidth = 1.5;
+                for (let i = 0; i <= 100; i++) {
+                    const x = (i / 100) * w;
+                    const y = h * 0.3 + Math.cos(i * 0.06 + time * 0.8) * h * 0.25 +
+                        Math.sin(i * 0.04 + time * 0.5) * h * 0.12;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(196, 155, 63, 0.15)';
+                ctx.lineWidth = 1.5;
+                for (let i = 0; i <= 100; i++) {
+                    const x = (i / 100) * w;
+                    const y = h * 0.5 + Math.sin(i * 0.05 + time * 0.6) * h * 0.2 +
+                        Math.cos(i * 0.02 + time * 0.4) * h * 0.1;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // رقم 80%
+                const fontSize80 = Math.min(w * 0.25, h * 0.3);
+                ctx.font = `900 ${fontSize80}px 'Cairo', sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                ctx.fillStyle = '#c49b3f';
+                ctx.fillText('80%', w * 0.3, h * 0.35);
+
+                const fontSizeSub = Math.min(w * 0.06, h * 0.07);
+                ctx.font = `400 ${fontSizeSub}px 'Cairo', sans-serif`;
+                ctx.fillStyle = 'rgba(168, 146, 106, 0.8)';
+                ctx.fillText('من المتداولين يخسرون', w * 0.3, h * 0.35 + fontSize80 * 0.4);
+
+                const fontSizeTitle = Math.min(w * 0.07, h * 0.08);
+                ctx.font = `700 ${fontSizeTitle}px 'Cairo', sans-serif`;
+                ctx.fillStyle = '#ece8e0';
+                ctx.textAlign = 'center';
+                ctx.fillText('أخطاء التداول', w * 0.7, h * 0.3);
+
+                const fontSizeSubTitle = Math.min(w * 0.045, h * 0.05);
+                ctx.font = `400 ${fontSizeSubTitle}px 'Cairo', sans-serif`;
+                ctx.fillStyle = 'rgba(168, 146, 106, 0.7)';
+                ctx.fillText('دليل عملي لفهم السوق', w * 0.7, h * 0.3 + fontSizeTitle * 1.2);
+
+                ctx.font = `400 ${fontSizeSubTitle * 0.9}px 'Cairo', sans-serif`;
+                ctx.fillStyle = 'rgba(168, 146, 106, 0.5)';
+                ctx.fillText('وبناء عقلية متداول حقيقي', w * 0.7, h * 0.3 + fontSizeTitle * 1.2 + fontSizeSubTitle * 1.3);
+
+                const fontSizeAuthor = Math.min(w * 0.04, h * 0.045);
+                ctx.font = `300 ${fontSizeAuthor}px 'Cairo', sans-serif`;
+                ctx.fillStyle = 'rgba(168, 146, 106, 0.4)';
+                ctx.fillText('تأليف: فريق التداول الواعي', w * 0.7, h * 0.85);
+
+                ctx.strokeStyle = 'rgba(196, 155, 63, 0.08)';
+                ctx.lineWidth = 1;
+                const lineY1 = h * 0.3 + fontSizeTitle * 1.1;
+                ctx.beginPath();
+                ctx.moveTo(w * 0.55, lineY1);
+                ctx.lineTo(w * 0.85, lineY1);
+                ctx.stroke();
+
+                const lineY2 = h * 0.3 + fontSizeTitle * 1.1 + fontSizeSubTitle * 1.1;
+                ctx.beginPath();
+                ctx.moveTo(w * 0.55, lineY2);
+                ctx.lineTo(w * 0.85, lineY2);
+                ctx.stroke();
+
+                const opacity2 = 0.3 + Math.sin(time * 0.5) * 0.15;
+                ctx.fillStyle = `rgba(196, 155, 63, ${opacity2})`;
+                ctx.font = `900 ${fontSize80 * 0.25}px 'Cairo', sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('2%', w * 0.03, h * 0.95);
+
+                ctx.textAlign = 'right';
+                ctx.fillText('2%', w * 0.97, h * 0.95);
+
+                coverAnimationId = requestAnimationFrame(() => drawCover(w, h));
+            }
+
+            const resizeObserver = new ResizeObserver(() => {
+                if (coverAnimationId) {
+                    cancelAnimationFrame(coverAnimationId);
+                }
+                resizeCover();
+            });
+
+            if (container) {
+                resizeObserver.observe(container);
+                setTimeout(resizeCover, 100);
+            }
+
+            window.addEventListener('resize', () => {
+                if (coverAnimationId) {
+                    cancelAnimationFrame(coverAnimationId);
+                }
+                resizeCover();
+            });
+        });
+
+        // ============================================================
+        // 2. شريط التقدم
+        // ============================================================
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        });
+
+        // ============================================================
+        // 3. زر العودة للأعلى
+        // ============================================================
+        const backBtn = document.getElementById('back-to-top');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backBtn.classList.add('show');
+            } else {
+                backBtn.classList.remove('show');
+            }
+        });
+
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ============================================================
+        // 4. عدادات متحركة
+        // ============================================================
+        function startCounters() {
+            const counters = document.querySelectorAll('.counter');
+            if (counters.length === 0) return;
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.target);
+                const suffix = counter.dataset.suffix || '';
+                let current = 0;
+                const duration = 1500;
+                const steps = 50;
+                const stepValue = target / steps;
+                const intervalTime = duration / steps;
+
+                if (target === 0) {
+                    counter.textContent = '0' + suffix;
+                    return;
+                }
+
+                counter.textContent = '0' + suffix;
+
+                let step = 0;
+                const timer = setInterval(() => {
+                    step++;
+                    current += stepValue;
+                    if (step >= steps) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = Math.round(current) + suffix;
+                }, intervalTime);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                startCounters();
+            }, 2500);
+        });
+
+        const statSection = document.getElementById('stat-cluster');
+        if (statSection) {
+            let counted = false;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !counted) {
+                        counted = true;
+                        startCounters();
+                    }
+                });
+            }, { threshold: 0.2 });
+            observer.observe(statSection);
+        }
+
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) {
+            let heroCounted = false;
+            const heroObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !heroCounted) {
+                        heroCounted = true;
+                        const counters = document.querySelectorAll('.hero-stats .counter');
+                        counters.forEach(counter => {
+                            const target = parseInt(counter.dataset.target);
+                            const suffix = counter.dataset.suffix || '';
+                            let current = 0;
+                            const duration = 1500;
+                            const steps = 50;
+                            const stepValue = target / steps;
+                            const intervalTime = duration / steps;
+                            counter.textContent = '0' + suffix;
+                            let step = 0;
+                            const timer = setInterval(() => {
+                                step++;
+                                current += stepValue;
+                                if (step >= steps) {
+                                    current = target;
+                                    clearInterval(timer);
+                                }
+                                counter.textContent = Math.round(current) + suffix;
+                            }, intervalTime);
+                        });
+                    }
+                });
+            }, { threshold: 0.2 });
+            heroObserver.observe(heroStats);
+        }
+
+        // ============================================================
+        // 5. القائمة المنسدلة
+        // ============================================================
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            const btn = document.querySelector('.dropbtn');
+            menu.classList.toggle('show');
+            btn.classList.toggle('open');
+        }
+
+        function closeDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            const btn = document.querySelector('.dropbtn');
+            menu.classList.remove('show');
+            btn.classList.remove('open');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.nav-dropdown');
+            if (dropdown && !dropdown.contains(event.target)) {
+                closeDropdown();
+            }
+        });
+
+        // ============================================================
+        // 6. تقييم النجوم
+        // ============================================================
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.value);
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const val = parseInt(this.dataset.value);
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < val; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+
+            star.addEventListener('mouseleave', function() {
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+        });
+
+        function submitRating() {
+            const feedback = document.getElementById('ratingFeedback').value;
+            let message = '';
+
+            if (selectedRating === 0) {
+                alert('الرجاء اختيار تقييم بالنجوم أولاً.');
+                return;
+            }
+
+            message = '⭐ تقييم الكتاب: ' + selectedRating + ' نجوم\n';
+            if (feedback.trim()) {
+                message += '📝 ملاحظات: ' + feedback.trim();
+            } else {
+                message += '📝 بدون ملاحظات إضافية.';
+            }
+
+            const subject = encodeURIComponent('تقييم كتاب أخطاء التداول وحلولها');
+            const body = encodeURIComponent(message);
+            window.location.href = 'mailto:tradelesson00@gmail.com?subject=' + subject + '&body=' + body;
+
+            alert('✅ تم إرسال تقييمك! شكراً لك على مشاركتك.');
+        }
+
+        // ============================================================
+        // 7. تبديل اللغة
+        // ============================================================
+        let currentLang = 'ar';
+
+        const translations = {
+            ar: {
+                langLabel: 'English',
+                navFeatures: 'المميزات',
+                navAboutBook: 'عن الكتاب',
+                navPrice: 'السعر',
+                navAbout: 'عن المؤلف',
+                navRating: 'التقييم',
+                heroMainTitle: 'أخطاء التداول وحلولها',
+                heroSubTitle: '— لماذا يخسر 80% من المبتدئين؟',
+                heroSub: 'دليل عملي يعلّمك متى يجب ألا تتداول أصلاً — لا وعود ربح، بل حماية لرأس مالك.',
+                stat1: 'من المبتدئين يخسرون',
+                stat2: 'قاعدة إدارة المخاطر',
+                stat3: 'فصلاً عملياً',
+                bookEyebrow: 'عن الكتاب',
+                bookTitle: 'كتابٌ يُقرأ ويُطبَّق — لا نظريات معلّقة في الهواء.',
+                bookDesc: 'أكثر من 100 صفحة موزّعة على 12 فصلاً عملياً، كُتبت للمبتدئين والمتوسطين بأسلوب مباشر. بعد كل فصل تجد تمارين تطبيقية تنقل الفكرة من الورق إلى قراراتك اليومية في السوق.',
+                feature1: 'صفحة عملية',
+                feature2: 'فصلاً مركّزاً',
+                feature3: 'تمارين بعد كل فصل',
+                feature4: 'رسوم توضيحية',
+                learnEyebrow: 'ماذا ستتعلم',
+                learnTitle: '12 فصلاً تنقلك من الخسارة العشوائية إلى قرارٍ مدروس.',
+                learn1Title: 'لماذا يخسر المبتدئون؟',
+                learn1Desc: 'تشريح هادئ للأسباب الحقيقية وراء خسارة الغالبية.',
+                learn2Title: 'متى يكون عدم التداول أذكى قرار',
+                learn2Desc: 'الانتظار ليس ضعفاً. البقاء خارج السوق قد يكون أفضل صفقاتك.',
+                learn3Title: 'التكاليف الخفية',
+                learn3Desc: 'حماية رأس المال من العمولات والفروقات التي تأكل أرباحك بصمت.',
+                learn4Title: 'قاعدة الـ2%',
+                learn4Desc: 'منهج بسيط لإدارة المخاطر يبقيك في اللعبة لأطول فترة ممكنة.',
+                learn5Title: 'استراتيجيات الدخول والخروج',
+                learn5Desc: 'تعلم متى تدخل ومتى تخرج بذكاء، مع أمثلة عملية.',
+                learn6Title: 'تمارين تطبّق فوراً',
+                learn6Desc: 'خطوات عملية تنفّذها مباشرة بعد كل فصل لترسيخ ما تعلّمته.',
+                statLead: 'من المبتدئين يخسرون',
+                statMin1: 'قاعدة إدارة المخاطر',
+                statMin2: 'فصلاً عملياً',
+                statCap: 'رقمٌ واحد يكفي ليجعلك تتوقّف وتفكّر — هذا الكتاب لا يَعِدك بأن تكون ضمن الـ20%، بل يعلّمك كيف تتجنّب أن تكون ضمن الـ80%.',
+                whoEyebrow: 'لمن هذا الكتاب',
+                whoTitle: 'كن صريحاً مع نفسك قبل أن تطلب.',
+                whoYesTitle: 'هذا الكتاب لك إذا…',
+                whoYes1: 'خسرت من قبل وتريد أن تفهم السبب الحقيقي.',
+                whoYes2: 'تبحث عن منهج واضح بلا وعود ولا مبالغة.',
+                whoYes3: 'مستعد للانضباط وحماية رأس مالك أولاً.',
+                whoNoTitle: 'ليس لك إذا…',
+                whoNo1: 'تريد إشارات تداول جاهزة تتبعها بلا فهم.',
+                whoNo2: 'تبحث عن وصفة ثراء سريع بين ليلة وضحاها.',
+                whoNo3: 'لا ترغب في التطبيق ولا في تغيير عاداتك.',
+                objectionText: '«كتب التداول كلها كلام نظري» — هذا الكتاب لا يبيعك حلماً؛ يخبرك أحياناً ألّا تتداول، ويعطيك تمريناً تطبّقه اليوم. الصدق هو الفرق.',
+                priceEyebrow: 'السعر',
+                priceCurrency: 'د.ج ≈ 5 دولارات',
+                priceConv: 'نسخة كاملة — أكثر من 100 صفحة و12 فصلاً عملياً.',
+                priceRisk: 'الدفع عند الطلب — تواصل مباشر، لا اشتراكات ولا رسوم متكرّرة.',
+                bookBtn: '📩 احجز نسختك الآن',
+                emailBtn: '📧 تواصل عبر البريد',
+                paymentNote: '⏳ الدفع عبر التحويل البريدي (CCP) أو فودافون كاش',
+                authorEyebrow: 'تواصل مع الكاتب',
+                authorTitle: 'صوتٌ صريح خلف «أخطاء التداول وحلولها».',
+                instagram: '📸 إنستغرام @tradelesson00',
+                email: '📧 البريد الإلكتروني',
+                ratingTitle: '⭐ كيف تقيم الكتاب؟',
+                ratingSub: 'شاركنا رأيك ليساعدنا في تطوير المحتوى',
+                ratingPlaceholder: 'اكتب ملاحظاتك هنا (اختياري)...',
+                ratingBtn: '📩 إرسال التقييم',
+                ratingNote: 'سيتم إرسال تقييمك وملاحظاتك إلى البريد الإلكتروني',
+                footerText: '© 2026 – فريق التداول الواعي. جميع الحقوق محفوظة.'
+            },
+            en: {
+                langLabel: 'العربية',
+                navFeatures: 'Features',
+                navAboutBook: 'About Book',
+                navPrice: 'Price',
+                navAbout: 'About',
+                navRating: 'Rating',
+                heroMainTitle: 'Trading Mistakes & Solutions',
+                heroSubTitle: '— Why 80% of Beginners Lose?',
+                heroSub: 'A practical guide that teaches you when not to trade at all — no profit promises, just capital protection with a clear voice.',
+                stat1: 'Beginners lose',
+                stat2: 'Risk management rule',
+                stat3: 'Practical chapters',
+                bookEyebrow: 'About the Book',
+                bookTitle: 'A book that is read and applied — no hanging theories.',
+                bookDesc: 'Over 100 pages across 12 practical chapters, written for beginners and intermediates. Each chapter includes exercises that transfer ideas from paper to your daily market decisions.',
+                feature1: 'Practical pages',
+                feature2: 'Focused chapters',
+                feature3: 'Exercises after each chapter',
+                feature4: 'Illustrations',
+                learnEyebrow: 'What You\'ll Learn',
+                learnTitle: '12 chapters that take you from random losses to informed decisions.',
+                learn1Title: 'Why do beginners lose?',
+                learn1Desc: 'A calm analysis of the real reasons behind most losses.',
+                learn2Title: 'When not trading is the smarter decision',
+                learn2Desc: 'Waiting is not weakness. Staying out of the market can be your best trade.',
+                learn3Title: 'Hidden costs',
+                learn3Desc: 'Protecting your capital from commissions and spreads that silently eat your profits.',
+                learn4Title: 'The 2% rule',
+                learn4Desc: 'A simple risk management approach to keep you in the game longer.',
+                learn5Title: 'Entry & exit strategies',
+                learn5Desc: 'Learn when to enter and exit wisely with practical examples.',
+                learn6Title: 'Apply instantly',
+                learn6Desc: 'Practical steps you implement immediately after each chapter.',
+                statLead: 'Beginners lose',
+                statMin1: 'Risk management rule',
+                statMin2: 'Practical chapters',
+                statCap: 'One number is enough to make you stop and think — this book doesn\'t promise you\'ll be in the top 20%, it teaches you how to avoid being in the bottom 80%.',
+                whoEyebrow: 'Who Is This Book For?',
+                whoTitle: 'Be honest with yourself before ordering.',
+                whoYesTitle: 'This book is for you if…',
+                whoYes1: 'You\'ve lost before and want to understand the real reason.',
+                whoYes2: 'You\'re looking for a clear method with no empty promises.',
+                whoYes3: 'You\'re ready for discipline and protecting your capital first.',
+                whoNoTitle: 'Not for you if…',
+                whoNo1: 'You want ready-made trading signals to follow blindly.',
+                whoNo2: 'You\'re looking for a get-rich-quick formula.',
+                whoNo3: 'You don\'t want to apply or change your habits.',
+                objectionText: '"All trading books are theoretical" — this book doesn\'t sell you a dream; it sometimes tells you not to trade, and gives you exercises to apply today. Honesty is the difference.',
+                priceEyebrow: 'Price',
+                priceCurrency: 'DZD ≈ $5',
+                priceConv: 'Full version — over 100 pages and 12 practical chapters.',
+                priceRisk: 'Order on demand — direct contact, no subscriptions or recurring fees.',
+                bookBtn: '📩 Book Your Copy Now',
+                emailBtn: '📧 Contact via Email',
+                paymentNote: '⏳ Payment via postal transfer (CCP) or Vodafone Cash',
+                authorEyebrow: 'Contact the Author',
+                authorTitle: 'An honest voice behind "Trading Mistakes & Solutions."',
+                instagram: '📸 Instagram @tradelesson00',
+                email: '📧 Email',
+                ratingTitle: '⭐ How do you rate the book?',
+                ratingSub: 'Share your feedback to help us improve the content',
+                ratingPlaceholder: 'Write your notes here (optional)...',
+                ratingBtn: '📩 Submit Review',
+                ratingNote: 'Your rating and feedback will be sent via email',
+                footerText: '© 2026 – Mindful Trading Team. All rights reserved.'
+            }
+        };
+
+        function toggleLanguage() {
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            currentLang = newLang;
+
+            document.body.classList.toggle('lang-en', newLang === 'en');
+
+            const t = translations[newLang];
+
+            document.getElementById('langDropdownBtn').textContent = t.langLabel;
+
+            const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+            dropdownLinks[0].textContent = t.navFeatures;
+            dropdownLinks[1].textContent = t.navAboutBook;
+            dropdownLinks[2].textContent = t.navPrice;
+            dropdownLinks[3].textContent = t.navAbout;
+            dropdownLinks[4].textContent = t.navRating;
+
+            document.getElementById('heroMainTitle').textContent = t.heroMainTitle;
+            document.getElementById('heroSubTitle').innerHTML = t.heroSubTitle;
+            document.getElementById('heroSub').textContent = t.heroSub;
+            document.getElementById('stat1Label').textContent = t.stat1;
+            document.getElementById('stat2Label').textContent = t.stat2;
+            document.getElementById('stat3Label').textContent = t.stat3;
+
+            document.getElementById('bookEyebrow').textContent = t.bookEyebrow;
+            document.getElementById('bookTitle').textContent = t.bookTitle;
+            document.getElementById('bookDesc').innerHTML = t.bookDesc;
+            document.getElementById('feature1').textContent = t.feature1;
+            document.getElementById('feature2').textContent = t.feature2;
+            document.getElementById('feature3').textContent = t.feature3;
+            document.getElementById('feature4').textContent = t.feature4;
+
+            document.getElementById('learnEyebrow').textContent = t.learnEyebrow;
+            document.getElementById('learnTitle').textContent = t.learnTitle;
+            document.getElementById('learn1Title').textContent = t.learn1Title;
+            document.getElementById('learn1Desc').textContent = t.learn1Desc;
+            document.getElementById('learn2Title').textContent = t.learn2Title;
+            document.getElementById('learn2Desc').textContent = t.learn2Desc;
+            document.getElementById('learn3Title').textContent = t.learn3Title;
+            document.getElementById('learn3Desc').textContent = t.learn3Desc;
+            document.getElementById('learn4Title').textContent = t.learn4Title;
+            document.getElementById('learn4Desc').textContent = t.learn4Desc;
+            document.getElementById('learn5Title').textContent = t.learn5Title;
+            document.getElementById('learn5Desc').textContent = t.learn5Desc;
+            document.getElementById('learn6Title').textContent = t.learn6Title;
+            document.getElementById('learn6Desc').textContent = t.learn6Desc;
+
+            document.getElementById('statLeadLabel').textContent = t.statLead;
+            document.getElementById('statMin1Label').textContent = t.statMin1;
+            document.getElementById('statMin2Label').textContent = t.statMin2;
+            document.getElementById('statCap').textContent = t.statCap;
+
+            document.getElementById('whoEyebrow').textContent = t.whoEyebrow;
+            document.getElementById('whoTitle').textContent = t.whoTitle;
+            document.getElementById('whoYesTitle').textContent = t.whoYesTitle;
+            document.getElementById('whoYes1').innerHTML = t.whoYes1;
+            document.getElementById('whoYes2').innerHTML = t.whoYes2;
+            document.getElementById('whoYes3').innerHTML = t.whoYes3;
+            document.getElementById('whoNoTitle').textContent = t.whoNoTitle;
+            document.getElementById('whoNo1').innerHTML = t.whoNo1;
+            document.getElementById('whoNo2').innerHTML = t.whoNo2;
+            document.getElementById('whoNo3').innerHTML = t.whoNo3;
+            document.getElementById('objectionText').textContent = t.objectionText;
+
+            document.getElementById('priceEyebrow').textContent = t.priceEyebrow;
+            document.getElementById('priceCurrency').innerHTML = t.priceCurrency;
+            document.getElementById('priceConv').textContent = t.priceConv;
+            document.getElementById('priceRisk').textContent = t.priceRisk;
+            document.getElementById('bookBtn').textContent = t.bookBtn;
+            document.getElementById('emailBtn').textContent = t.emailBtn;
+            document.getElementById('paymentNote').textContent = t.paymentNote;
+
+            document.getElementById('authorEyebrow').textContent = t.authorEyebrow;
+            document.getElementById('authorTitle').textContent = t.authorTitle;
+            document.getElementById('instagramLink').textContent = t.instagram;
+            document.getElementById('emailLink').textContent = t.email;
+
+            document.getElementById('ratingTitle').textContent = t.ratingTitle;
+            document.getElementById('ratingSub').textContent = t.ratingSub;
+            document.getElementById('ratingFeedback').placeholder = t.ratingPlaceholder;
+            document.getElementById('ratingBtn').textContent = t.ratingBtn;
+            document.getElementById('ratingNote').textContent = t.ratingNote;
+
+            document.getElementById('footerText').textContent = t.footerText;
+        }
+
+        // ============================================================
+        // 8. تشغيل الأنميشنات بعد تحميل الصفحة
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const elements = document.querySelectorAll('.animate-on-load');
+                elements.forEach((el, index) => {
+                    setTimeout(() => {
+                        el.classList.add('show');
+                    }, index * 60);
+                });
+            }, 2400);
+        });
+    </script>
+
+</body>
+</html>
