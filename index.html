@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>أخطاء التداول وحلولها – كتاب التداول الواعي</title>
+    
+    <!-- ===== أيقونة الموقع (Favicon) ===== -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAHCSURBVFiF7Zc9a1RBFIaPuUuIin/AxkIQLHwBWxuL2AtpFKwCgpX+ApFsE7AQsRAbmyCghkVEFBULGxtbC1GxUiFgFgKbLBEUfKycmcVF7p09u2c3G+7CgQNn5p3zMWdmz2Y2s9nMP09LHvC0LEpVSZLUSZKOXJIkHZIkfAqC4APW4y2LdLtrUsNGVZ1sOAiC/wfghz9AmBzSlALoQGCaPUtS/zTguCctACwAr+9AiImyBTgP3AUuACeAk81hn8u0mNrpepMuzcC8bpcgSxskSZIkSZKkHjKRU1XjMBgCo+AT8AR4DFwFXgGXgUHAqas1fuzg1M1CgHN9x9JfjV/Osd9fjOYD7wD2p7MlySJwH9id0w7H2RhmfUrt/4KPAw+AJ8DNNI8H5nIOONIK/AM4ADwB7hd0FjBLWx2e5X5F4ifAJ+A4MAscKGh9Dr+NMqx9jD9Y2+1+wL/FMHye4L0sBZwG7q/g/Uqx8l3gZskW96CwnGQ5aQC3y7ZbsoUFeJQF0D/svwX22Nb/HbDf9r8C9rpK3gLuprHp/QObm63AOfAd+PRbbATmD1wBDmS9E4F9wEbgaOAhcL1pA/CvVj0CXK/bQ0A/8JrG/htg2ZavraVZ1m2l7V6U7KqNy/ML4Z+B0fP/AAAAAElFTkSuQmCC" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================ */
+        /* ===== الألوان ===== */
+        /* ============================================================ */
+
+        :root {
+            --bg: #0b0b0b;
+            --secondary: #14141f;
+            --accent: #c49b3f;
+            --accent-dim: #8a7a4a;
+            --accent-soft: #a8926a;
+            --text: #ece8e0;
+            --text-muted: #7a7a7a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ============================================================ */
+        /* ===== الأساسيات ===== */
+        /* ============================================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* ===== خلفية بتوهج ذهبي خفيف ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 70% 20%, rgba(196, 155, 63, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 30% 80%, rgba(196, 155, 63, 0.025) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* ================================================================ */
+        /* ===== خلفية تداول متحركة (خطوط + شموع يابانية) ===== */
+        /* ================================================================ */
+
+        #trading-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        /* ===== الخطوط المتصاعدة والهابطة ===== */
+        .line-up {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(196, 155, 63, 0.6), transparent);
+            border-radius: 2px;
+            animation: moveUp 12s linear infinite;
+        }
+
+        .line-down {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(196, 155, 63, 0.4), transparent);
+            border-radius: 2px;
+            animation: moveDown 14s linear infinite;
+        }
+
+        @keyframes moveUp {
+            0% { transform: translateY(100vh) rotate(-3deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(-3deg); opacity: 0; }
+        }
+
+        @keyframes moveDown {
+            0% { transform: translateY(-20vh) rotate(3deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(3deg); opacity: 0; }
+        }
+
+        /* ===== شموع يابانية ===== */
+        .candle {
+            position: absolute;
+            width: 6px;
+            border-radius: 2px;
+            animation: candleFade 18s linear infinite;
+        }
+
+        .candle-body {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            border-radius: 2px;
+        }
+
+        .candle.up .candle-body {
+            background: rgba(34, 197, 94, 0.5);
+        }
+
+        .candle.down .candle-body {
+            background: rgba(239, 68, 68, 0.5);
+        }
+
+        .candle .wick {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1.5px;
+            background: rgba(196, 155, 63, 0.2);
+            border-radius: 1px;
+        }
+
+        .candle .wick.top {
+            top: 0;
+            height: 8px;
+        }
+
+        .candle .wick.bottom {
+            bottom: 0;
+            height: 8px;
+        }
+
+        @keyframes candleFade {
+            0% { opacity: 0; transform: translateY(30px) scale(0.8); }
+            15% { opacity: 1; transform: translateY(0) scale(1); }
+            85% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-30px) scale(0.8); }
+        }
+
+        /* ===== توزيع الشموع ===== */
+        .candle:nth-child(1) { left: 5%; animation-delay: 0s; top: 20%; }
+        .candle:nth-child(2) { left: 15%; animation-delay: 1.5s; top: 50%; }
+        .candle:nth-child(3) { left: 25%; animation-delay: 3s; top: 35%; }
+        .candle:nth-child(4) { left: 35%; animation-delay: 4.5s; top: 70%; }
+        .candle:nth-child(5) { left: 45%; animation-delay: 6s; top: 25%; }
+        .candle:nth-child(6) { left: 55%; animation-delay: 7.5s; top: 60%; }
+        .candle:nth-child(7) { left: 65%; animation-delay: 9s; top: 40%; }
+        .candle:nth-child(8) { left: 75%; animation-delay: 10.5s; top: 75%; }
+        .candle:nth-child(9) { left: 85%; animation-delay: 12s; top: 30%; }
+        .candle:nth-child(10) { left: 95%; animation-delay: 13.5s; top: 55%; }
+        .candle:nth-child(11) { left: 10%; animation-delay: 2s; top: 80%; }
+        .candle:nth-child(12) { left: 30%; animation-delay: 5s; top: 15%; }
+        .candle:nth-child(13) { left: 50%; animation-delay: 8s; top: 85%; }
+        .candle:nth-child(14) { left: 70%; animation-delay: 11s; top: 10%; }
+        .candle:nth-child(15) { left: 90%; animation-delay: 14s; top: 65%; }
+
+        /* ===== إعدادات الشموع ===== */
+        .candle.up .candle-body { height: 30px; bottom: 10px; }
+        .candle.down .candle-body { height: 25px; top: 10px; }
+        .candle .wick.top { height: 10px; }
+        .candle .wick.bottom { height: 10px; }
+
+        .wrap,
+        section,
+        header {
+            position: relative;
+            z-index: 1;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+        /* ===== الألوان ===== */
+        .gold {
+            color: var(--accent);
+        }
+        .gold-soft {
+            color: var(--accent-soft);
+        }
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .eyebrow {
+            color: var(--accent-dim);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        /* ===== الأزرار ===== */
+        .btn-primary {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg) !important;
+            font-weight: 900;
+            padding: 18px 44px;
+            font-size: clamp(16px, 1.3vw, 18px);
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 24px rgba(196, 155, 63, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(196, 155, 63, 0.12);
+            background: #d4aa4a;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
+            padding: 14px 28px;
+            font-size: clamp(14px, 1vw, 15px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-dim);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* ===== زر تبديل اللغة ===== */
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--accent-soft);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+            text-decoration: none;
+        }
+
+        .lang-switch:hover {
+            background: rgba(196, 155, 63, 0.10);
+            border-color: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .lang-switch .lang-icon {
+            font-size: 14px;
+        }
+
+        /* ===== الهيدر ===== */
+        header.nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(11, 11, 11, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 10px 0;
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-soft);
+        }
+
+        /* ===== القسم الرئيسي ===== */
+        #hero {
+            padding: 40px 0 30px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        #hero .lede {
+            font-size: clamp(30px, 4.6vw, 46px);
+            font-weight: 900;
+            line-height: 1.1;
+            max-width: 16ch;
+            margin-bottom: 12px;
+        }
+
+        #hero .lede .pct {
+            color: var(--accent);
+            font-size: 1.1em;
+        }
+
+        #hero .sub {
+            font-size: clamp(15px, 1.4vw, 17px);
+            color: var(--accent-soft);
+            max-width: 48ch;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 12px;
+        }
+
+        .hero-stats .stat .num {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent);
+            display: block;
+            line-height: 1;
+        }
+
+        .hero-stats .stat .label {
+            font-size: 12px;
+            color: var(--accent-soft);
+        }
+
+        /* ===== رسم بياني ===== */
+        .hero-chart {
+            background: rgba(20, 20, 31, 0.92);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 24px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .hero-chart .chart-title {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-soft);
+            margin-bottom: 14px;
+            letter-spacing: 0.05em;
+        }
+
+        .hero-chart .chart-title span {
+            color: var(--accent);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 90px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 4px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            margin: 0 2px;
+            border-radius: 3px 3px 0 0;
+            background: linear-gradient(180deg, rgba(196, 155, 63, 0.35), rgba(196, 155, 63, 0.05));
+            transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            min-height: 4px;
+        }
+
+        .chart-bar .bar-value {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: var(--accent-dim);
+            font-weight: 700;
+            opacity: 0.5;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 4px 0;
+            font-size: 9px;
+            color: var(--accent-soft);
+            opacity: 0.4;
+        }
+
+        .chart-labels span {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-chart .chart-sub {
+            text-align: center;
+            font-size: 11px;
+            color: var(--accent-soft);
+            opacity: 0.6;
+            margin-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            padding-top: 10px;
+        }
+
+        .hero-chart .chart-sub strong {
+            color: var(--accent);
+        }
+
+        .hairline {
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0.04;
+            margin-top: 28px;
+        }
+
+        /* ===== عن الكتاب ===== */
+        #book-context {
+            background: var(--secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 44px 0;
+        }
+
+        .ctx-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .ctx-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .ctx-features .item {
+            background: rgba(20, 20, 31, 0.85);
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .ctx-features .item .num {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--accent);
+            display: block;
+            line-height: 1;
+        }
+
+        .ctx-features .item .label {
+            font-size: 12px;
+            color: var(--accent-soft);
+        }
+
+        #book-context h2 {
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 900;
+            line-height: 1.15;
+            margin: 10px 0 14px;
+        }
+
+        #book-context p {
+            color: var(--accent-soft);
+            max-width: 44ch;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* ===== المميزات (بطاقات ماذا ستتعلم) ===== */
+        #what-you-learn h2 {
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 900;
+            margin: 8px 0 32px;
+        }
+
+        .learn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .learn-card {
+            background: rgba(20, 20, 31, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 20px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .learn-card:hover {
+            border-color: rgba(196, 155, 63, 0.04);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .learn-card .mark {
+            font-size: 22px;
+            color: var(--accent-dim);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .learn-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .learn-card p {
+            font-size: 13px;
+            color: var(--accent-soft);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ===== الإحصائيات ===== */
+        #stat-cluster {
+            background: var(--secondary);
+            text-align: center;
+            padding: 44px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .stat-row {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .stat-lead .n {
+            font-size: clamp(56px, 11vw, 100px);
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 0.9;
+            display: block;
+        }
+
+        .stat-lead .l {
+            font-size: 13px;
+            color: var(--accent-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .stat-min .n {
+            font-size: clamp(28px, 3.6vw, 40px);
+            font-weight: 900;
+            color: var(--text);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-min .l {
+            font-size: 12px;
+            color: var(--accent-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        #stat-cluster .cap {
+            margin-top: 24px;
+            color: var(--accent-soft);
+            max-width: 48ch;
+            margin-inline: auto;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* ===== لمن هذا الكتاب (بطاقات) ===== */
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .split .col {
+            background: rgba(20, 20, 31, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 24px 20px;
+        }
+
+        .split .yes {
+            background: rgba(196, 155, 63, 0.10);
+            border: 1px solid rgba(196, 155, 63, 0.12);
+        }
+
+        .split .yes h3 {
+            color: var(--accent);
+        }
+
+        .split h3 {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .split ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .split li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 6px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+            color: var(--accent-soft);
+        }
+
+        .split li:first-child {
+            border-top: none;
+        }
+
+        /* ===== صندوق الاقتباس ===== */
+        .objection {
+            margin-top: 20px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            background: rgba(20, 20, 31, 0.92);
+            border-right: 3px solid var(--accent-dim);
+        }
+
+        .objection p {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 300;
+            color: var(--accent-soft);
+            font-style: italic;
+        }
+
+        /* ===== سعر الكتاب ===== */
+        #pricing {
+            background: var(--secondary);
+            text-align: center;
+            padding: 44px 0 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        #pricing .price {
+            font-size: clamp(38px, 5.5vw, 58px);
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+            margin: 6px 0 2px;
+        }
+
+        #pricing .price small {
+            font-size: 0.35em;
+            font-weight: 400;
+            color: var(--accent-soft);
+        }
+
+        #pricing .conv {
+            color: var(--accent-soft);
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        #pricing .risk {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        #pricing .btn-group {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #pricing .btn-group .btn-secondary {
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ===== المؤلف ===== */
+        #author-contact {
+            padding: 36px 0;
+        }
+
+        #author-contact h2 {
+            font-size: clamp(22px, 2.8vw, 34px);
+            font-weight: 900;
+            margin: 6px 0 14px;
+        }
+
+        .contacts {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 16px 0 20px;
+        }
+
+        .contacts a {
+            color: var(--accent-soft);
+            text-decoration: none;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .contacts a:hover {
+            border-color: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        /* ===== تقييم النجوم ===== */
+        #rating-section {
+            background: var(--secondary);
+            padding: 36px 0 44px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .rating-box {
+            max-width: 520px;
+            margin: 0 auto;
+            text-align: center;
+            background: rgba(10, 10, 10, 0.85);
+            padding: 28px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+        }
+
+        .rating-box h3 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .rating-box .sub {
+            font-size: 13px;
+            color: var(--accent-soft);
+            margin-bottom: 16px;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .rating-stars .star {
+            font-size: 32px;
+            cursor: pointer;
+            color: #4a4a5a;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .rating-stars .star:hover,
+        .rating-stars .star.active {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .rating-box textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(10, 10, 10, 0.5);
+            color: var(--text);
+            font-size: 13px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Cairo', sans-serif;
+            transition: border 0.3s;
+            margin-bottom: 12px;
+        }
+
+        .rating-box textarea:focus {
+            border-color: var(--accent-dim);
+            outline: none;
+        }
+
+        .rating-box textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .rating-box .rating-btn {
+            padding: 12px 32px;
+            background: var(--accent);
+            color: var(--bg);
+            font-weight: 800;
+            font-size: 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rating-box .rating-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(196, 155, 63, 0.08);
+            background: #d4aa4a;
+        }
+
+        .rating-box .rating-note {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* ===== التذييل ===== */
+        footer {
+            text-align: center;
+            padding: 20px 0 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.01);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 992px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+            .hero-chart {
+                max-width: 260px;
+            }
+            .ctx-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .ctx-features {
+                grid-template-columns: 1fr 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .learn-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-inner {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .learn-grid {
+                grid-template-columns: 1fr;
+            }
+            .stat-row {
+                gap: 16px;
+            }
+            .contacts {
+                flex-direction: column;
+                align-items: center;
+            }
+            #pricing .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            #pricing .btn-group .btn-primary,
+            #pricing .btn-group .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+            .ctx-features {
+                grid-template-columns: 1fr;
+            }
+            section {
+                padding: 28px 0;
+            }
+            .rating-box {
+                padding: 18px 14px;
+            }
+            .rating-stars .star {
+                font-size: 28px;
+            }
+            .footer-inner {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero-chart {
+                padding: 14px 10px;
+                max-width: 100%;
+            }
+            .chart-container {
+                height: 60px;
+            }
+            .chart-bar .bar-value {
+                font-size: 7px;
+                top: -14px;
+            }
+            .btn-primary {
+                padding: 14px 24px;
+                font-size: 14px;
+                width: 100%;
+                text-align: center;
+            }
+            .btn-secondary {
+                padding: 10px 18px;
+                font-size: 13px;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* ===== اللغة الإنجليزية (اتجاه يسار) ===== */
+        body.lang-en {
+            direction: ltr;
+            text-align: left;
+        }
+
+        body.lang-en .wrap,
+        body.lang-en section,
+        body.lang-en header {
+            direction: ltr;
+            text-align: left;
+        }
+
+        body.lang-en .nav-links {
+            direction: ltr;
+        }
+
+        body.lang-en .hero-stats {
+            direction: ltr;
+        }
+
+        body.lang-en .split li {
+            direction: ltr;
+        }
+
+        body.lang-en .objection {
+            border-right: none;
+            border-left: 3px solid var(--accent-dim);
+        }
+
+        body.lang-en .ctx-features .item {
+            direction: ltr;
+        }
+
+        body.lang-en .rating-box {
+            direction: ltr;
+        }
+
+        body.lang-en .contacts {
+            direction: ltr;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- خلفية التداول المتقدة (خطوط + شموع يابانية) -->
+    <!-- ============================================================ -->
+    <div id="trading-bg">
+        <!-- خطوط متصاعدة وهابطة -->
+        <div class="line-up" style="left: 10%; width: 30%; animation-duration: 11s; animation-delay: 0s;"></div>
+        <div class="line-up" style="left: 40%; width: 25%; animation-duration: 14s; animation-delay: 3s;"></div>
+        <div class="line-up" style="left: 70%; width: 35%; animation-duration: 12s; animation-delay: 6s;"></div>
+        <div class="line-down" style="left: 20%; width: 20%; animation-duration: 13s; animation-delay: 1s;"></div>
+        <div class="line-down" style="left: 55%; width: 30%; animation-duration: 15s; animation-delay: 4s;"></div>
+        <div class="line-down" style="left: 85%; width: 25%; animation-duration: 11s; animation-delay: 7s;"></div>
+
+        <!-- شموع يابانية -->
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle down"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+        <div class="candle up"><div class="wick top"></div><div class="candle-body"></div><div class="wick bottom"></div></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- الهيدر -->
+    <!-- ============================================================ -->
+    <header class="nav">
+        <div class="wrap nav-inner">
+            <a href="#" class="brand">📘 <span>Trade</span>Lesson</a>
+            <nav class="nav-links">
+                <a href="#what-you-learn" data-ar="المميزات" data-en="Features">المميزات</a>
+                <a href="#pricing" data-ar="السعر" data-en="Price">السعر</a>
+                <a href="#author-contact" data-ar="عن المؤلف" data-en="About">عن المؤلف</a>
+                <!-- زر تبديل اللغة -->
+                <button class="lang-switch" onclick="toggleLanguage()" id="langToggle">
+                    <span class="lang-icon">🌐</span>
+                    <span id="langLabel">English</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- القسم الرئيسي -->
+    <!-- ============================================================ -->
+    <section id="hero">
+        <div class="wrap hero-grid">
+            <div class="hero-content">
+                <h1 class="lede" id="heroTitle">
+                    أخطاء التداول وحلولها — لماذا يخسر <span class="pct">80%</span> من المبتدئين؟
+                </h1>
+                <p class="sub" id="heroSub">دليل عملي يعلّمك متى يجب ألا تتداول أصلاً — لا وعود ربح، بل حماية لرأس مالك.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="num">80%</span>
+                        <span class="label" id="stat1Label">من المبتدئين يخسرون</span>
+                    </div>
+                    <div class="stat">
+                        <span class="num">2%</span>
+                        <span class="label" id="stat2Label">قاعدة إدارة المخاطر</span>
+                    </div>
+                    <div class="stat">
+                        <span class="num">12</span>
+                        <span class="label" id="stat3Label">فصلاً عملياً</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- رسم بياني تخطيطي -->
+            <div class="hero-chart">
+                <div class="chart-title">📊 <span>حركة السوق</span> (نمط صاعد)</div>
+                <div class="chart-container" id="chartContainer">
+                    <div class="chart-bar" style="height:20px;"><span class="bar-value">1.2</span></div>
+                    <div class="chart-bar" style="height:35px;"><span class="bar-value">1.5</span></div>
+                    <div class="chart-bar" style="height:30px;"><span class="bar-value">1.4</span></div>
+                    <div class="chart-bar" style="height:55px;"><span class="bar-value">1.8</span></div>
+                    <div class="chart-bar" style="height:45px;"><span class="bar-value">1.6</span></div>
+                    <div class="chart-bar" style="height:70px;"><span class="bar-value">2.1</span></div>
+                    <div class="chart-bar" style="height:85px;"><span class="bar-value">2.4</span></div>
+                </div>
+                <div class="chart-labels">
+                    <span>ي</span><span>ف</span><span>م</span><span>أ</span><span>م</span><span>ي</span><span>ل</span>
+                </div>
+                <div class="chart-sub"><strong>ارتداد من الدعم</strong> — نموذج شراء قوي</div>
+            </div>
+        </div>
+        <div class="wrap"><div class="hairline"></div></div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- عن الكتاب -->
+    <!-- ============================================================ -->
+    <section id="book-context">
+        <div class="wrap ctx-grid">
+            <div>
+                <span class="eyebrow" id="bookEyebrow">عن الكتاب</span>
+                <h2 id="bookTitle">كتابٌ يُقرأ ويُطبَّق — لا نظريات معلّقة في الهواء.</h2>
+                <p id="bookDesc">أكثر من 100 صفحة موزّعة على <strong>12 فصلاً عملياً</strong>، كُتبت للمبتدئين والمتوسطين بأسلوب مباشر. بعد كل فصل تجد تمارين تطبيقية تنقل الفكرة من الورق إلى قراراتك اليومية في السوق.</p>
+            </div>
+            <div class="ctx-features">
+                <div class="item"><span class="num">+100</span><span class="label" id="feature1">صفحة عملية</span></div>
+                <div class="item"><span class="num">12</span><span class="label" id="feature2">فصلاً مركّزاً</span></div>
+                <div class="item"><span class="num">✦</span><span class="label" id="feature3">تمارين بعد كل فصل</span></div>
+                <div class="item"><span class="num">📊</span><span class="label" id="feature4">رسوم توضيحية</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- المميزات -->
+    <!-- ============================================================ -->
+    <section id="what-you-learn">
+        <div class="wrap">
+            <span class="eyebrow" id="learnEyebrow">ماذا ستتعلم</span>
+            <h2 id="learnTitle">12 فصلاً تنقلك من الخسارة العشوائية إلى قرارٍ مدروس.</h2>
+            <div class="learn-grid">
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn1Title">لماذا يخسر المبتدئون؟</h3><p id="learn1Desc">تشريح هادئ للأسباب الحقيقية وراء خسارة الغالبية.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn2Title">متى يكون عدم التداول أذكى قرار</h3><p id="learn2Desc">الانتظار ليس ضعفاً. البقاء خارج السوق قد يكون أفضل صفقاتك.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn3Title">التكاليف الخفية</h3><p id="learn3Desc">حماية رأس المال من العمولات والفروقات التي تأكل أرباحك بصمت.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn4Title">قاعدة الـ2%</h3><p id="learn4Desc">منهج بسيط لإدارة المخاطر يبقيك في اللعبة لأطول فترة ممكنة.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn5Title">استراتيجيات الدخول والخروج</h3><p id="learn5Desc">تعلم متى تدخل ومتى تخرج بذكاء، مع أمثلة عملية.</p></div>
+                <div class="learn-card"><span class="mark">✦</span><h3 id="learn6Title">تمارين تطبّق فوراً</h3><p id="learn6Desc">خطوات عملية تنفّذها مباشرة بعد كل فصل لترسيخ ما تعلّمته.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- الإحصائيات -->
+    <!-- ============================================================ -->
+    <section id="stat-cluster">
+        <div class="wrap">
+            <div class="stat-row">
+                <div class="stat-lead"><span class="n">80%</span><span class="l" id="statLeadLabel">من المبتدئين يخسرون</span></div>
+                <div class="stat-min"><span class="n">2%</span><span class="l" id="statMin1Label">قاعدة إدارة المخاطر</span></div>
+                <div class="stat-min"><span class="n">12</span><span class="l" id="statMin2Label">فصلاً عملياً</span></div>
+            </div>
+            <p class="cap" id="statCap">رقمٌ واحد يكفي ليجعلك تتوقّف وتفكّر — هذا الكتاب لا يَعِدك بأن تكون ضمن الـ20%، بل يعلّمك كيف تتجنّب أن تكون ضمن الـ80%.</p>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- لمن هذا الكتاب -->
+    <!-- ============================================================ -->
+    <section id="who-its-for">
+        <div class="wrap">
+            <span class="eyebrow" id="whoEyebrow">لمن هذا الكتاب</span>
+            <h2 style="font-size:clamp(24px,3vw,36px); font-weight:900; margin:8px 0 32px;" id="whoTitle">كن صريحاً مع نفسك قبل أن تطلب.</h2>
+            <div class="split">
+                <div class="col yes">
+                    <h3 id="whoYesTitle">هذا الكتاب لك إذا…</h3>
+                    <ul>
+                        <li id="whoYes1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49b3f" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>خسرت من قبل وتريد أن تفهم السبب الحقيقي.</li>
+                        <li id="whoYes2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49b3f" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>تبحث عن منهج واضح بلا وعود ولا مبالغة.</li>
+                        <li id="whoYes3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49b3f" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>مستعد للانضباط وحماية رأس مالك أولاً.</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3 id="whoNoTitle">ليس لك إذا…</h3>
+                    <ul>
+                        <li id="whoNo1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"></path></svg>تريد إشارات تداول جاهزة تتبعها بلا فهم.</li>
+                        <li id="whoNo2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"></path></svg>تبحث عن وصفة ثراء سريع بين ليلة وضحاها.</li>
+                        <li id="whoNo3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"></path></svg>لا ترغب في التطبيق ولا في تغيير عاداتك.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="objection">
+                <p id="objectionText">«كتب التداول كلها كلام نظري» — هذا الكتاب لا يبيعك حلماً؛ يخبرك أحياناً ألّا تتداول، ويعطيك تمريناً تطبّقه اليوم. الصدق هو الفرق.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- سعر الكتاب -->
+    <!-- ============================================================ -->
+    <section id="pricing">
+        <div class="wrap">
+            <span class="eyebrow" id="priceEyebrow">السعر</span>
+            <div class="price">700 د.ج <small>≈ 5 دولارات</small></div>
+            <p class="conv" id="priceConv">نسخة كاملة — أكثر من 100 صفحة و12 فصلاً عملياً.</p>
+            <p class="risk" id="priceRisk">الدفع عند الطلب — تواصل مباشر، لا اشتراكات ولا رسوم متكرّرة.</p>
+            <div class="btn-group">
+                <a href="https://www.instagram.com/tradelesson00" target="_blank" rel="noopener noreferrer" class="btn-primary" id="bookBtn">📩 احجز نسختك الآن</a>
+                <a href="mailto:tradelesson00@gmail.com?subject=استفسار عن الكتاب&body=مرحباً، أود الحصول على كتاب أخطاء التداول وحلولها..." class="btn-secondary" id="emailBtn">📧 تواصل عبر البريد</a>
+            </div>
+            <div style="margin-top: 10px; font-size: 13px; color: var(--text-muted);" id="paymentNote">⏳ الدفع عبر التحويل البريدي (CCP) أو فودافون كاش</div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- المؤلف -->
+    <!-- ============================================================ -->
+    <section id="author-contact">
+        <div class="wrap" style="text-align:center;">
+            <span class="eyebrow" id="authorEyebrow">تواصل مع الكاتب</span>
+            <h2 id="authorTitle">صوتٌ صريح خلف «أخطاء التداول وحلولها».</h2>
+            <div class="contacts">
+                <a href="https://www.instagram.com/tradelesson00" target="_blank" rel="noopener noreferrer" id="instagramLink">📸 إنستغرام @tradelesson00</a>
+                <a href="mailto:tradelesson00@gmail.com" id="emailLink">📧 البريد الإلكتروني</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- تقييم النجوم -->
+    <!-- ============================================================ -->
+    <section id="rating-section">
+        <div class="wrap">
+            <div class="rating-box">
+                <h3 id="ratingTitle">⭐ كيف تقيم الكتاب؟</h3>
+                <p class="sub" id="ratingSub">شاركنا رأيك ليساعدنا في تطوير المحتوى</p>
+                <div class="rating-stars" id="starContainer">
+                    <button class="star" data-value="1">★</button>
+                    <button class="star" data-value="2">★</button>
+                    <button class="star" data-value="3">★</button>
+                    <button class="star" data-value="4">★</button>
+                    <button class="star" data-value="5">★</button>
+                </div>
+                <textarea id="ratingFeedback" placeholder="اكتب ملاحظاتك هنا (اختياري)..." id="ratingPlaceholder"></textarea>
+                <button class="rating-btn" onclick="submitRating()" id="ratingBtn">📩 إرسال التقييم</button>
+                <div class="rating-note" id="ratingNote">سيتم إرسال تقييمك وملاحظاتك إلى البريد الإلكتروني</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- التذييل -->
+    <!-- ============================================================ -->
+    <footer>
+        <div class="wrap footer-inner">
+            <span id="footerText">© 2025 – فريق التداول الواعي. جميع الحقوق محفوظة.</span>
+            <button class="lang-switch" onclick="toggleLanguage()">
+                <span class="lang-icon">🌐</span>
+                <span id="langLabelFooter">English</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- كود تفاعل التقييم وحركة الرسم البياني وتبديل اللغة -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // 1. تقييم النجوم
+        // ============================================================
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.value);
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const val = parseInt(this.dataset.value);
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < val; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+
+            star.addEventListener('mouseleave', function() {
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+        });
+
+        function submitRating() {
+            const feedback = document.getElementById('ratingFeedback').value;
+            let message = '';
+
+            if (selectedRating === 0) {
+                alert('الرجاء اختيار تقييم بالنجوم أولاً.');
+                return;
+            }
+
+            message = '⭐ تقييم الكتاب: ' + selectedRating + ' نجوم\n';
+            if (feedback.trim()) {
+                message += '📝 ملاحظات: ' + feedback.trim();
+            } else {
+                message += '📝 بدون ملاحظات إضافية.';
+            }
+
+            const subject = encodeURIComponent('تقييم كتاب أخطاء التداول وحلولها');
+            const body = encodeURIComponent(message);
+            window.location.href = 'mailto:tradelesson00@gmail.com?subject=' + subject + '&body=' + body;
+
+            alert('✅ تم إرسال تقييمك! شكراً لك على مشاركتك.');
+        }
+
+        // ============================================================
+        // 2. حركة الرسم البياني عند التمرير
+        // ============================================================
+        const chartBars = document.querySelectorAll('.chart-bar');
+        const chartContainer = document.getElementById('chartContainer');
+
+        if (chartContainer && chartBars.length) {
+            const chartObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        chartBars.forEach(bar => {
+                            const height = bar.style.height;
+                            bar.style.setProperty('--target-height', height);
+                            bar.style.height = '4px';
+                            setTimeout(() => {
+                                bar.style.height = height;
+                            }, 200);
+                        });
+                        chartObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            chartObserver.observe(chartContainer);
+        }
+
+        // ============================================================
+        // 3. تبديل اللغة (عربي / إنجليزي)
+        // ============================================================
+        let currentLang = 'ar';
+
+        // قاموس الترجمة
+        const translations = {
+            ar: {
+                // الهيدر
+                langLabel: 'English',
+                // الهيدر روابط
+                navFeatures: 'المميزات',
+                navPrice: 'السعر',
+                navAbout: 'عن المؤلف',
+                // القسم الرئيسي
+                heroTitle: 'أخطاء التداول وحلولها — لماذا يخسر 80% من المبتدئين؟',
+                heroSub: 'دليل عملي يعلّمك متى يجب ألا تتداول أصلاً — لا وعود ربح، بل حماية لرأس مالك.',
+                stat1: 'من المبتدئين يخسرون',
+                stat2: 'قاعدة إدارة المخاطر',
+                stat3: 'فصلاً عملياً',
+                // عن الكتاب
+                bookEyebrow: 'عن الكتاب',
+                bookTitle: 'كتابٌ يُقرأ ويُطبَّق — لا نظريات معلّقة في الهواء.',
+                bookDesc: 'أكثر من 100 صفحة موزّعة على 12 فصلاً عملياً، كُتبت للمبتدئين والمتوسطين بأسلوب مباشر. بعد كل فصل تجد تمارين تطبيقية تنقل الفكرة من الورق إلى قراراتك اليومية في السوق.',
+                feature1: 'صفحة عملية',
+                feature2: 'فصلاً مركّزاً',
+                feature3: 'تمارين بعد كل فصل',
+                feature4: 'رسوم توضيحية',
+                // ماذا ستتعلم
+                learnEyebrow: 'ماذا ستتعلم',
+                learnTitle: '12 فصلاً تنقلك من الخسارة العشوائية إلى قرارٍ مدروس.',
+                learn1Title: 'لماذا يخسر المبتدئون؟',
+                learn1Desc: 'تشريح هادئ للأسباب الحقيقية وراء خسارة الغالبية.',
+                learn2Title: 'متى يكون عدم التداول أذكى قرار',
+                learn2Desc: 'الانتظار ليس ضعفاً. البقاء خارج السوق قد يكون أفضل صفقاتك.',
+                learn3Title: 'التكاليف الخفية',
+                learn3Desc: 'حماية رأس المال من العمولات والفروقات التي تأكل أرباحك بصمت.',
+                learn4Title: 'قاعدة الـ2%',
+                learn4Desc: 'منهج بسيط لإدارة المخاطر يبقيك في اللعبة لأطول فترة ممكنة.',
+                learn5Title: 'استراتيجيات الدخول والخروج',
+                learn5Desc: 'تعلم متى تدخل ومتى تخرج بذكاء، مع أمثلة عملية.',
+                learn6Title: 'تمارين تطبّق فوراً',
+                learn6Desc: 'خطوات عملية تنفّذها مباشرة بعد كل فصل لترسيخ ما تعلّمته.',
+                // الإحصائيات
+                statLead: 'من المبتدئين يخسرون',
+                statMin1: 'قاعدة إدارة المخاطر',
+                statMin2: 'فصلاً عملياً',
+                statCap: 'رقمٌ واحد يكفي ليجعلك تتوقّف وتفكّر — هذا الكتاب لا يَعِدك بأن تكون ضمن الـ20%، بل يعلّمك كيف تتجنّب أن تكون ضمن الـ80%.',
+                // لمن هذا الكتاب
+                whoEyebrow: 'لمن هذا الكتاب',
+                whoTitle: 'كن صريحاً مع نفسك قبل أن تطلب.',
+                whoYesTitle: 'هذا الكتاب لك إذا…',
+                whoYes1: 'خسرت من قبل وتريد أن تفهم السبب الحقيقي.',
+                whoYes2: 'تبحث عن منهج واضح بلا وعود ولا مبالغة.',
+                whoYes3: 'مستعد للانضباط وحماية رأس مالك أولاً.',
+                whoNoTitle: 'ليس لك إذا…',
+                whoNo1: 'تريد إشارات تداول جاهزة تتبعها بلا فهم.',
+                whoNo2: 'تبحث عن وصفة ثراء سريع بين ليلة وضحاها.',
+                whoNo3: 'لا ترغب في التطبيق ولا في تغيير عاداتك.',
+                objectionText: '«كتب التداول كلها كلام نظري» — هذا الكتاب لا يبيعك حلماً؛ يخبرك أحياناً ألّا تتداول، ويعطيك تمريناً تطبّقه اليوم. الصدق هو الفرق.',
+                // السعر
+                priceEyebrow: 'السعر',
+                priceConv: 'نسخة كاملة — أكثر من 100 صفحة و12 فصلاً عملياً.',
+                priceRisk: 'الدفع عند الطلب — تواصل مباشر، لا اشتراكات ولا رسوم متكرّرة.',
+                bookBtn: '📩 احجز نسختك الآن',
+                emailBtn: '📧 تواصل عبر البريد',
+                paymentNote: '⏳ الدفع عبر التحويل البريدي (CCP) أو فودافون كاش',
+                // المؤلف
+                authorEyebrow: 'تواصل مع الكاتب',
+                authorTitle: 'صوتٌ صريح خلف «أخطاء التداول وحلولها».',
+                instagram: '📸 إنستغرام @tradelesson00',
+                email: '📧 البريد الإلكتروني',
+                // التقييم
+                ratingTitle: '⭐ كيف تقيم الكتاب؟',
+                ratingSub: 'شاركنا رأيك ليساعدنا في تطوير المحتوى',
+                ratingPlaceholder: 'اكتب ملاحظاتك هنا (اختياري)...',
+                ratingBtn: '📩 إرسال التقييم',
+                ratingNote: 'سيتم إرسال تقييمك وملاحظاتك إلى البريد الإلكتروني',
+                // التذييل
+                footerText: '© 2025 – فريق التداول الواعي. جميع الحقوق محفوظة.'
+            },
+            en: {
+                langLabel: 'العربية',
+                navFeatures: 'Features',
+                navPrice: 'Price',
+                navAbout: 'About',
+                heroTitle: 'Trading Mistakes & Solutions — Why 80% of Beginners Lose?',
+                heroSub: 'A practical guide that teaches you when not to trade at all — no profit promises, just capital protection with a clear voice.',
+                stat1: 'Beginners lose',
+                stat2: 'Risk management rule',
+                stat3: 'Practical chapters',
+                bookEyebrow: 'About the Book',
+                bookTitle: 'A book that is read and applied — no hanging theories.',
+                bookDesc: 'Over 100 pages across 12 practical chapters, written for beginners and intermediates. Each chapter includes exercises that transfer ideas from paper to your daily market decisions.',
+                feature1: 'Practical pages',
+                feature2: 'Focused chapters',
+                feature3: 'Exercises after each chapter',
+                feature4: 'Illustrations',
+                learnEyebrow: 'What You\'ll Learn',
+                learnTitle: '12 chapters that take you from random losses to informed decisions.',
+                learn1Title: 'Why do beginners lose?',
+                learn1Desc: 'A calm analysis of the real reasons behind most losses.',
+                learn2Title: 'When not trading is the smarter decision',
+                learn2Desc: 'Waiting is not weakness. Staying out of the market can be your best trade.',
+                learn3Title: 'Hidden costs',
+                learn3Desc: 'Protecting your capital from commissions and spreads that silently eat your profits.',
+                learn4Title: 'The 2% rule',
+                learn4Desc: 'A simple risk management approach to keep you in the game longer.',
+                learn5Title: 'Entry & exit strategies',
+                learn5Desc: 'Learn when to enter and exit wisely with practical examples.',
+                learn6Title: 'Apply instantly',
+                learn6Desc: 'Practical steps you implement immediately after each chapter.',
+                statLead: 'Beginners lose',
+                statMin1: 'Risk management rule',
+                statMin2: 'Practical chapters',
+                statCap: 'One number is enough to make you stop and think — this book doesn\'t promise you\'ll be in the top 20%, it teaches you how to avoid being in the bottom 80%.',
+                whoEyebrow: 'Who Is This Book For?',
+                whoTitle: 'Be honest with yourself before ordering.',
+                whoYesTitle: 'This book is for you if…',
+                whoYes1: 'You\'ve lost before and want to understand the real reason.',
+                whoYes2: 'You\'re looking for a clear method with no empty promises.',
+                whoYes3: 'You\'re ready for discipline and protecting your capital first.',
+                whoNoTitle: 'Not for you if…',
+                whoNo1: 'You want ready-made trading signals to follow blindly.',
+                whoNo2: 'You\'re looking for a get-rich-quick formula.',
+                whoNo3: 'You don\'t want to apply or change your habits.',
+                objectionText: '"All trading books are theoretical" — this book doesn\'t sell you a dream; it sometimes tells you not to trade, and gives you exercises to apply today. Honesty is the difference.',
+                priceEyebrow: 'Price',
+                priceConv: 'Full version — over 100 pages and 12 practical chapters.',
+                priceRisk: 'Order on demand — direct contact, no subscriptions or recurring fees.',
+                bookBtn: '📩 Book Your Copy Now',
+                emailBtn: '📧 Contact via Email',
+                paymentNote: '⏳ Payment via postal transfer (CCP) or Vodafone Cash',
+                authorEyebrow: 'Contact the Author',
+                authorTitle: 'An honest voice behind "Trading Mistakes & Solutions."',
+                instagram: '📸 Instagram @tradelesson00',
+                email: '📧 Email',
+                ratingTitle: '⭐ How do you rate the book?',
+                ratingSub: 'Share your feedback to help us improve the content',
+                ratingPlaceholder: 'Write your notes here (optional)...',
+                ratingBtn: '📩 Submit Review',
+                ratingNote: 'Your rating and feedback will be sent via email',
+                footerText: '© 2025 – Mindful Trading Team. All rights reserved.'
+            }
+        };
+
+        function toggleLanguage() {
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            currentLang = newLang;
+
+            // تغيير اتجاه الصفحة
+            document.body.classList.toggle('lang-en', newLang === 'en');
+
+            // تحديث النصوص
+            const t = translations[newLang];
+
+            // تحديث أزرار اللغة
+            document.querySelectorAll('#langLabel, #langLabelFooter').forEach(el => {
+                el.textContent = t.langLabel;
+            });
+
+            // تحديث روابط الهيدر
+            document.querySelector('.nav-links a[href="#what-you-learn"]').textContent = t.navFeatures;
+            document.querySelector('.nav-links a[href="#pricing"]').textContent = t.navPrice;
+            document.querySelector('.nav-links a[href="#author-contact"]').textContent = t.navAbout;
+
+            // القسم الرئيسي
+            document.getElementById('heroTitle').innerHTML = t.heroTitle;
+            document.getElementById('heroSub').textContent = t.heroSub;
+            document.getElementById('stat1Label').textContent = t.stat1;
+            document.getElementById('stat2Label').textContent = t.stat2;
+            document.getElementById('stat3Label').textContent = t.stat3;
+
+            // عن الكتاب
+            document.getElementById('bookEyebrow').textContent = t.bookEyebrow;
+            document.getElementById('bookTitle').textContent = t.bookTitle;
+            document.getElementById('bookDesc').innerHTML = t.bookDesc;
+            document.getElementById('feature1').textContent = t.feature1;
+            document.getElementById('feature2').textContent = t.feature2;
+            document.getElementById('feature3').textContent = t.feature3;
+            document.getElementById('feature4').textContent = t.feature4;
+
+            // ماذا ستتعلم
+            document.getElementById('learnEyebrow').textContent = t.learnEyebrow;
+            document.getElementById('learnTitle').textContent = t.learnTitle;
+            document.getElementById('learn1Title').textContent = t.learn1Title;
+            document.getElementById('learn1Desc').textContent = t.learn1Desc;
+            document.getElementById('learn2Title').textContent = t.learn2Title;
+            document.getElementById('learn2Desc').textContent = t.learn2Desc;
+            document.getElementById('learn3Title').textContent = t.learn3Title;
+            document.getElementById('learn3Desc').textContent = t.learn3Desc;
+            document.getElementById('learn4Title').textContent = t.learn4Title;
+            document.getElementById('learn4Desc').textContent = t.learn4Desc;
+            document.getElementById('learn5Title').textContent = t.learn5Title;
+            document.getElementById('learn5Desc').textContent = t.learn5Desc;
+            document.getElementById('learn6Title').textContent = t.learn6Title;
+            document.getElementById('learn6Desc').textContent = t.learn6Desc;
+
+            // الإحصائيات
+            document.getElementById('statLeadLabel').textContent = t.statLead;
+            document.getElementById('statMin1Label').textContent = t.statMin1;
+            document.getElementById('statMin2Label').textContent = t.statMin2;
+            document.getElementById('statCap').textContent = t.statCap;
+
+            // لمن هذا الكتاب
+            document.getElementById('whoEyebrow').textContent = t.whoEyebrow;
+            document.getElementById('whoTitle').textContent = t.whoTitle;
+            document.getElementById('whoYesTitle').textContent = t.whoYesTitle;
+            document.getElementById('whoYes1').innerHTML = t.whoYes1;
+            document.getElementById('whoYes2').innerHTML = t.whoYes2;
+            document.getElementById('whoYes3').innerHTML = t.whoYes3;
+            document.getElementById('whoNoTitle').textContent = t.whoNoTitle;
+            document.getElementById('whoNo1').innerHTML = t.whoNo1;
+            document.getElementById('whoNo2').innerHTML = t.whoNo2;
+            document.getElementById('whoNo3').innerHTML = t.whoNo3;
+            document.getElementById('objectionText').textContent = t.objectionText;
+
+            // السعر
+            document.getElementById('priceEyebrow').textContent = t.priceEyebrow;
+            document.getElementById('priceConv').textContent = t.priceConv;
+            document.getElementById('priceRisk').textContent = t.priceRisk;
+            document.getElementById('bookBtn').textContent = t.bookBtn;
+            document.getElementById('emailBtn').textContent = t.emailBtn;
+            document.getElementById('paymentNote').textContent = t.paymentNote;
+
+            // المؤلف
+            document.getElementById('authorEyebrow').textContent = t.authorEyebrow;
+            document.getElementById('authorTitle').textContent = t.authorTitle;
+            document.getElementById('instagramLink').textContent = t.instagram;
+            document.getElementById('emailLink').textContent = t.email;
+
+            // التقييم
+            document.getElementById('ratingTitle').textContent = t.ratingTitle;
+            document.getElementById('ratingSub').textContent = t.ratingSub;
+            document.getElementById('ratingFeedback').placeholder = t.ratingPlaceholder;
+            document.getElementById('ratingBtn').textContent = t.ratingBtn;
+            document.getElementById('ratingNote').textContent = t.ratingNote;
+
+            // التذييل
+            document.getElementById('footerText').textContent = t.footerText;
+        }
+    </script>
+
+</body>
+</html>
